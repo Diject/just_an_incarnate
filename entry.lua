@@ -274,7 +274,7 @@ local function cellActivatedCallback(e)
     local spawner = mapSpawner:new(e.cell, config.localConfig.id, localStorage.data)
 
     local cellInfo = spawner:getCellLocalInfo()
-    if cellInfo.lastSpawnTimestamp + config.data.map.spawn.interval > tes3.getSimulationTimestamp() then return end
+    if cellInfo.lastSpawnTimestamp and cellInfo.lastSpawnTimestamp + config.data.map.spawn.interval > tes3.getSimulationTimestamp() then return end
     cellInfo.lastSpawnTimestamp = tes3.getSimulationTimestamp()
 
     ---@type jai.item.decreaseItemStats.params
