@@ -57,6 +57,7 @@ local function processDead()
     dataStorage.savePlayerDeathInfo(config.localConfig.id)
 
     if config.data.misc.bounty.reset then
+        tes3.mobilePlayer.bounty = 0
         if config.data.misc.bounty.removeStolen then
             tes3.runLegacyScript{command = "PayFine"} ---@diagnostic disable-line: missing-fields
         else
