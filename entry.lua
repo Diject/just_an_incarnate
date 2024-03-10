@@ -48,6 +48,12 @@ event.register(tes3.event.save, saveCallback)
 
 local function processDead()
 
+    local isWerewolf = tes3.mobilePlayer.werewolf
+    if isWerewolf then
+        tes3.runLegacyScript{command = "set PCWerewolf to 0", reference = tes3.player} ---@diagnostic disable-line: missing-fields
+        tes3.runLegacyScript{command = "UndoWerewolf", reference = tes3.player} ---@diagnostic disable-line: missing-fields
+    end
+
     dataStorage.savePlayerDeathInfo(config.localConfig.id)
 
     if config.data.misc.bounty.reset then
@@ -199,6 +205,9 @@ local function processDead()
 
     timer.start{duration = 2, callback = function()
         playerLib.menuMode = false
+        if isWerewolf then
+            tes3.runLegacyScript{command = "set PCWerewolf to 1", reference = tes3.player} ---@diagnostic disable-line: missing-fields
+        end
         timer.start{duration = config.data.revive.safeTime, callback = function() isDead = false end}
         timer.delayOneFrame(function() tes3.fadeIn{duration = config.data.revive.delay} end)
         playerLib.addRestoreSpells(math.max(1, config.data.revive.safeTime))
