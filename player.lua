@@ -171,6 +171,7 @@ function this.changePlayer()
         tes3.player.baseObject.female = math.random() > 0.5 and true or false
         tes3.player1stPerson.baseObject.female = tes3.player.baseObject.female
     end
+    ---@type tes3race
     local newRace = config.data.change.race == true and races[math.random(#races)] or oldRace
     tes3.player.baseObject.race = newRace
     tes3.player1stPerson.baseObject.race = newRace
@@ -183,8 +184,8 @@ function this.changePlayer()
         if config.data.change.race or config.data.change.bodyParts then
             local heads = {}
             local hairs = {}
+            local playerObject = tes3.player.baseObject
             for _, object in pairs(tes3.dataHandler.nonDynamicData.objects) do
-                local playerObject = tes3.player.baseObject
                 if object ~= nil and object.objectType == tes3.objectType.bodyPart and not object.deleted and
                         object.partType == tes3.activeBodyPartLayer.base and object.part <= 1 and
                         object.raceName == playerObject.race.name and object.playable and playerObject.female == object.female and
@@ -197,8 +198,12 @@ function this.changePlayer()
                     end
                 end
             end
-            tes3.player.baseObject.head = heads[math.random(#heads)]
             tes3.player.baseObject.hair = hairs[math.random(#hairs)]
+            if tes3.getGlobal("PCVampire") > 0 then
+                tes3.player.baseObject.head = playerObject.female and newRace.femaleBody.vampireHead or newRace.maleBody.vampireHead
+            else
+                tes3.player.baseObject.head = heads[math.random(#heads)]
+            end
         end
     end)
     -- attributes
