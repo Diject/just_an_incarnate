@@ -234,7 +234,7 @@ function this.changePlayer()
 
     spells = {}
     for _, spell in pairs(tes3.player.object.spells) do
-        if spell.castType == tes3.spellType.spell and not this.disallowedSpellIds[spell.id:lower()] then
+        if not this.disallowedSpellIds[spell.id:lower()] then
             table.insert(spells, spell)
         end
     end
