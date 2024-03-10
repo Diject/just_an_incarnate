@@ -213,6 +213,7 @@ local function processDead()
         timer.delayOneFrame(function() tes3.fadeIn{duration = config.data.revive.delay} end)
         playerLib.addRestoreSpells(math.max(1, config.data.revive.safeTime))
         tes3.setPlayerControlState{enabled = true,}
+        tes3.mobilePlayer.paralyze = 0
         tes3.cancelAnimationLoop{reference = tes3.player}
     end}
 end
@@ -270,6 +271,7 @@ local function onDamage(e)
             tes3.playAnimation{reference = tes3.player, group = tes3.animationGroup.knockOut,}
             tes3.playAnimation{reference = tes3.player1stPerson, group = tes3.animationGroup.knockOut,}
         end
+        tes3.mobilePlayer.paralyze = 1
         tes3.fadeOut{duration = config.data.revive.delay}
         timer.start{duration = config.data.revive.delay, callback = processDead}
     end
