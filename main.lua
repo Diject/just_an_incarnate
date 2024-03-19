@@ -1,3 +1,5 @@
+local mcm = include("diject.just_an_incarnate.mcm")
+
 local espName = "Just An Incarnate.ESP"
 
 --- @param e initializedEventData
