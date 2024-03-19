@@ -146,20 +146,25 @@ this.default = {
 ---@class config.globalData
 this.data = advTable.deepcopy(this.default)
 
--- do
---     local data = mwse.loadConfig(globalStorageName)
---     if data then
---         this.data = data
---         advTable.addMissing(this.data, this.default)
---     else
---         mwse.saveConfig(globalStorageName, this.data)
---     end
--- end
+---@class config.globalData
+this.global = advTable.deepcopy(this.default)
+
+do
+    local data = mwse.loadConfig(globalStorageName)
+    if data then
+        this.data = data
+        advTable.addMissing(this.data, this.default)
+        this.global = advTable.deepcopy(this.data)
+    else
+        mwse.saveConfig(globalStorageName, this.data)
+    end
+end
 
 ---@class config.localData
 this.localDefault = {
     count = 0, -- number of deaths
     id = nil,
+    config = {},
 }
 
 ---@class config.localData
@@ -168,6 +173,7 @@ this.localConfig = advTable.deepcopy(this.localDefault)
 
 function this.initLocalData()
     if localStorage.isReady() then
+        advTable.applyChanges(this.data, this.global)
         local storageData = localStorage.data[localStorageName]
         if not storageData then
             local id = tostring(os.time())
@@ -176,6 +182,7 @@ function this.initLocalData()
         else
             this.localConfig = storageData
             advTable.addMissing(this.localConfig, this.localDefault)
+            advTable.applyChanges(this.data, this.localConfig.config)
         end
         return true
     end
@@ -185,6 +192,32 @@ end
 function this.resetLocalToDefault()
     if not localStorage.isReady() then return end
     advTable.applyChanges(this.localConfig, this.localDefault)
+end
+
+---@param path string
+---@return any, boolean return return value and is the value from the local config
+function this.getValueByPath(path)
+    local value = advTable.getValueByPath(this.localConfig.config, path)
+    if value ~= nil then
+        return value, true
+    end
+    return advTable.getValueByPath(this.data, path), false
+end
+
+---@param path string
+---@param newValue any
+---@return boolean success
+function this.setValueByPath(path, newValue)
+    if tes3.player then
+        advTable.setValueByPath(this.localConfig.config, path, newValue)
+    else
+        advTable.setValueByPath(this.global, path, newValue)
+    end
+    return advTable.setValueByPath(this.data, path, newValue)
+end
+
+function this.save()
+    mwse.saveConfig(globalStorageName, this.global)
 end
 
 return this
