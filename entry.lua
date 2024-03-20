@@ -69,9 +69,12 @@ local function processDead()
         for ref in cell:iterateReferences({tes3.objectType.npc, tes3.objectType.creature}) do
             local mobile = ref.mobile
             if mobile and mobile.health.current > 0 and mobile ~= tes3.mobilePlayer then
-                mobile.fight = mobile.object.baseObject.aiConfig.fight
+                local baseObject = mobile.object.baseObject
+                if not baseObject.id:find("jai_dpl_") then
+                    mobile.fight = baseObject.aiConfig.fight
+                end
                 if mobile.object.baseDisposition then
-                    mobile.object.baseDisposition = mobile.object.baseObject.baseDisposition
+                    mobile.object.baseDisposition = baseObject.baseDisposition
                 end
                 mobile:stopCombat(true)
                 tes3.modStatistic{reference = mobile, name = "health", current = 99999, limitToBase = true,}
