@@ -5,6 +5,9 @@ local mcm = mwse.mcm
 
 local this = {}
 
+---@type mwseMCMTemplate|nil
+this.modData = nil
+
 local function getSettingColor(isLocal)
     return isLocal and tes3ui.getPalette(tes3.palette.bigAnswerPressedColor) or tes3ui.getPalette("normal_color")
 end
@@ -249,6 +252,26 @@ end
 
 -- ##################################################
 
+local function registerTemplate(self)
+    local modData = {}
+
+	--- @param container tes3uiElement
+	modData.onCreate = function(container)
+		self:create(container)
+		modData.onClose = self.onClose
+	end
+
+	--- @param searchText string
+	--- @return boolean
+	modData.onSearch = function(searchText)
+		return self:onSearchInternal(searchText)
+	end
+
+	mwse.registerModConfig(self.name, modData)
+	mwse.log("%s mod config registered", self.name)
+    return modData
+end
+
 ---@param e tes3uiElement
 local function onClose(e)
     config.save()
@@ -380,8 +403,8 @@ function this.registerModConfig()
         createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "goldPercent"}, label = "Transfer this % of your gold", limits = {min = 0, max = 100}}
     end
 
-
-    template:register()
+    -- template:register()
+    this.modData = registerTemplate(template)
 end
 
 event.register(tes3.event.modConfigReady, this.registerModConfig)
