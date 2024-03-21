@@ -14,6 +14,7 @@ this.playerDefaultItems = {"common_pants_01", "common_shoes_01", "common_shirt_0
 this.creatureTemplates = {"jai_skeleton_", "jai_ancestor_ghost_"}
 
 this.menuMode = false
+this.bodyPartsChanged = false
 
 this.disallowedSpellIds = {}
 
@@ -49,7 +50,11 @@ function this.init()
     this.disallowedSpellIds["shield"] = true
     this.disallowedSpellIds["detect_creature"] = true
     this.disallowedSpellIds["hearth heal"] = true
+end
 
+function this.reset()
+    this.menuMode = false
+    this.bodyPartsChanged = false
 end
 
 
@@ -170,15 +175,16 @@ function this.changePlayer()
     if config.data.change.sex then
         tes3.player.baseObject.female = math.random() > 0.5 and true or false
         tes3.player1stPerson.baseObject.female = tes3.player.baseObject.female
+        this.bodyPartsChanged = true
     end
     ---@type tes3race
-    local newRace = config.data.change.race == true and races[math.random(#races)] or oldRace
-    tes3.player.baseObject.race = newRace
-    tes3.player1stPerson.baseObject.race = newRace
-    tes3.playAnimation({
-        reference = tes3.player,
-        mesh = "base_animKnA.nif",
-    })
+    local newRace = oldRace
+    if config.data.change.race then
+        newRace = races[math.random(#races)] or oldRace
+        tes3.player.baseObject.race = newRace
+        tes3.player1stPerson.baseObject.race = newRace
+        this.bodyPartsChanged = true
+    end
     -- hair & head
     timer.delayOneFrame(function()
         if config.data.change.race or config.data.change.bodyParts then

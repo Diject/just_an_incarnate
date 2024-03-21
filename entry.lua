@@ -19,6 +19,7 @@ local isDead = false
 local function loadedCallback(e)
     localStorage.initPlayerStorage()
     config.initLocalData()
+    playerLib.reset()
 
     if e.newGame then return end
     if customClassLib.isGameCustomClass() then
@@ -314,7 +315,7 @@ event.register(tes3.event.cellActivated, cellActivatedCallback)
 --- @param e bodyPartAssignedEventData
 local function bodyPartAssignedCallback(e)
     if not e.reference or not e.bodyPart or e.bodyPart.partType ~= tes3.activeBodyPartLayer.base then return end
-    if (e.reference == tes3.player or e.reference == tes3.player1stPerson) and
+    if (e.reference == tes3.player or e.reference == tes3.player1stPerson) and playerLib.bodyPartsChanged and
             (e.index ~= tes3.activeBodyPart.hair and e.index ~= tes3.activeBodyPart.head) then
 
         e.bodyPart = npc.getRaceBaseBodyPart(e.reference, e.index)
