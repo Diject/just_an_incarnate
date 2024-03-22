@@ -183,6 +183,10 @@ function this.changePlayer()
         newRace = races[math.random(#races)] or oldRace
         tes3.player.baseObject.race = newRace
         tes3.player1stPerson.baseObject.race = newRace
+        tes3.playAnimation({
+            reference = tes3.player,
+            mesh = "base_animKnA.nif",
+        })
         this.bodyPartsChanged = true
     end
     -- hair & head
