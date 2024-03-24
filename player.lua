@@ -5,6 +5,7 @@ local customClassLib = include("diject.just_an_incarnate.libs.customClass")
 local dataStorage = include("diject.just_an_incarnate.storage.dataStorage")
 local npc = include("diject.just_an_incarnate.libs.npc")
 local config = include("diject.just_an_incarnate.config")
+local localStorage = include("diject.just_an_incarnate.storage.localStorage")
 
 local this = {}
 
@@ -12,6 +13,8 @@ local priority = -9999
 
 this.playerDefaultItems = {"common_pants_01", "common_shoes_01", "common_shirt_01"}
 this.creatureTemplates = {"jai_skeleton_", "jai_ancestor_ghost_"}
+this.npcTemplate = "jai_dpl_"
+this.summonSpellId = "jai_summon_bodies"
 
 this.menuMode = false
 this.bodyPartsChanged = false
@@ -589,7 +592,7 @@ function this.createDuplicate()
         local rnd = math.random() * 100
         if config.data.spawn.body.chance > rnd then
             local raceId = tostring(tes3.player.baseObject.race):lower()
-            local objPrefix = "jai_dpl_"..(tes3.player.baseObject.female and "f_" or "m_")
+            local objPrefix = this.npcTemplate..(tes3.player.baseObject.female and "f_" or "m_")
             objId = objPrefix..raceId
             obj = tes3.getObject(objId)
             if not obj then
@@ -617,8 +620,11 @@ function this.createDuplicate()
         if obj and objId and objConfig then
             local newRef = tes3.createReference{object = objId, position = playerPos, orientation = playerRot, cell = playerCell}
 
+            if not newRef then return end
+
             npc.transferStats(tes3.player, newRef)
             npc.saveTooltip(newRef, tes3.player.object.name..(config.localConfig.count > 0 and " The "..tostring(config.localConfig.count + 1).."th" or ""))
+            localStorage.getStorage(newRef).isPlayerCopy = true
 
             local raceData = dataStorage.getRaceData(tes3.player.baseObject.race)
             npc.saveBodyParts(newRef, raceData, {hair = tes3.player.baseObject.hair.id, head = tes3.player.baseObject.head.id})
@@ -706,6 +712,28 @@ function this.createDuplicate()
             end
             newRef.object.modified = true
         end
+    end
+end
+
+function this.addSummonSpell()
+    local spell = tes3.createObject{id = this.summonSpellId, objectType = tes3.objectType.spell, getIfExists = true,
+        name = "Azura's voice",
+        castType = tes3.spellType.power,
+        magickaCost = 0,
+    }
+    spell.effects[1].id = tes3.effect.light
+    spell.effects[1].max = 10
+    spell.effects[1].min = 10
+    spell.effects[1].duration = 10
+    spell.effects[1].rangeType = tes3.effectRange.self
+    if not tes3.player.object.spells:contains(spell) then
+        tes3.addSpell{reference = tes3.player, spell = spell}
+    end
+end
+
+function this.removeSummonSpell()
+    if tes3.player.object.spells:contains(this.summonSpellId) then
+        tes3.removeSpell{reference = tes3.player, spell = this.summonSpellId}
     end
 end
 

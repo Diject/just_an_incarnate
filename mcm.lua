@@ -39,6 +39,7 @@ end
 ---@field self mwseMCMExclusionsPage|mwseMCMFilterPage|mwseMCMMouseOverPage|mwseMCMPage|mwseMCMSideBarPage
 ---@field variable mwseMCMCustomVariable|mwseMCMVariable|nil
 ---@field config jai.mcm.configPath
+---@field customCallback nil|fun(newValue:boolean)
 
 ---@param params mwseMCMCategory.createYesNoButton.data|jai.mcm.createYesNo
 ---@return mwseMCMYesNoButton
@@ -57,6 +58,7 @@ local function createYesNo(params)
             button.elements.label.color = getSettingColor(tes3.player)
             button.elements.label:getTopLevelMenu():updateLayout()
         end
+        if params.customCallback then params.customCallback(newValue) end
     end
     variable.getter = function(self)
         local path = params.config.path.."."..params.config.name
@@ -252,6 +254,15 @@ end
 
 -- ##################################################
 
+local function addRemSummonSpell(value)
+    if not tes3.player then return end
+    if value then
+        include("diject.just_an_incarnate.player").addSummonSpell()
+    else
+        include("diject.just_an_incarnate.player").removeSummonSpell()
+    end
+end
+
 local function registerTemplate(self)
     local modData = {}
 
@@ -334,6 +345,8 @@ function this.registerModConfig()
     do
         local corpsePage = template:createPage{label = "Corpse"}
         createLabel{self = corpsePage, label = "The settings for courpses that stay after the player's death", labelColor = tes3.palette.headerColor}
+
+        createYesNo{self = corpsePage, config = {path = "spawn", name = "addSummonSpell"}, label = "Add a spell that summons the all player copies. This may help when they can't be reached", customCallback = addRemSummonSpell}
 
         local bodyGroup = corpsePage:createCategory{label = "Copy of the player"}
         local spawnBody = createNumberEdit{self = bodyGroup, config = {path = "spawn.body", name = "chance"}, label = "Chance in % to create a copy of the player after death. If the copy is alive, it will be transparent", limits = {min = 0, max = 100}, maxForLinkedGroup = 100}

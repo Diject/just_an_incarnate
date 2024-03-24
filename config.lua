@@ -64,6 +64,7 @@ this.default = {
         combine = true,
     },
     spawn = {
+        addSummonSpell = true,
         transfer = {
             equipment = 100,
             equipedItems = 100,
@@ -138,8 +139,9 @@ this.default = {
         },
     },
     text = {
-        death = "With your death, the thread of prophecy continues. You were a false incarnate.",
+        death = "You have met your destiny and no longer carry the burden of prophecy. You were a false incarnate.",
         itemPrefix = "Weak",
+        summonSpellDescription = "Teleports all false reincarnates from the current location to you",
     },
 }
 

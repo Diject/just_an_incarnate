@@ -21,6 +21,12 @@ local function loadedCallback(e)
     config.initLocalData()
     playerLib.reset()
 
+    if config.getValueByPath("spawn.addSummonSpell") then
+        playerLib.addSummonSpell()
+    else
+        playerLib.removeSummonSpell()
+    end
+
     if e.newGame then return end
     if customClassLib.isGameCustomClass() then
         customClassLib.saveClassData(tes3.player.object.class)
@@ -351,3 +357,45 @@ local function mobileActivatedCallback(e)
     end
 end
 event.register(tes3.event.mobileActivated, mobileActivatedCallback)
+
+--- @param e spellCastedEventData
+local function spellCastedCallback(e)
+    if e.caster ~= tes3.player or e.source.id ~= playerLib.summonSpellId then
+        return
+    end
+    local playerCell = tes3.player.cell
+    local function checkCell(cell)
+        local playerPos = tes3.player.position
+        for _, ref in pairs(cell.actors) do
+            if localStorage.isExists(ref) and localStorage.getStorage(ref).isPlayerCopy then
+                local newPos = tes3vector3.new(playerPos.x + math.random(-50, 50), playerPos.y + math.random(-50, 50), playerPos.z)
+                tes3.positionCell{reference = ref, position = newPos, orientation = tes3.player.orientation,
+                    cell = tes3.player.cell, forceCellChange = true}
+                tes3.createVisualEffect{object = "VFX_RestorationHit", repeatCount = 1, lifespan = 4, position = newPos}
+                tes3.playSound{sound = "restoration hit", reference = ref, mixChannel = tes3.soundMix.effects}
+            end
+        end
+    end
+    if playerCell.isInterior then
+        checkCell(playerCell)
+    else
+        for _, cellData in pairs(tes3.dataHandler.exteriorCells) do
+            local cell = cellData.cell
+            checkCell(cell)
+        end
+    end
+end
+event.register(tes3.event.spellCasted, spellCastedCallback)
+
+--- @param e uiSpellTooltipEventData
+local function uiSpellTooltipCallback(e)
+    if e.spell.id == playerLib.summonSpellId then
+        local container = e.tooltip:findChild("PartHelpMenu_main")
+        if not container then return end
+        local effects = container:findChild("effect")
+        if not effects then return end
+        effects:destroyChildren()
+        effects:createLabel{text = config.data.text.summonSpellDescription}
+    end
+end
+event.register(tes3.event.uiSpellTooltip, uiSpellTooltipCallback)
