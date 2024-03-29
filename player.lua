@@ -186,12 +186,39 @@ function this.changePlayer()
         newRace = races[math.random(#races)] or oldRace
         tes3.player.baseObject.race = newRace
         tes3.player1stPerson.baseObject.race = newRace
-        tes3.playAnimation({
-            reference = tes3.player,
-            mesh = "base_animKnA.nif",
-        })
         this.bodyPartsChanged = true
     end
+
+    -- animations for new race/sex
+    timer.delayOneFrame(function()
+        if newRace.isBeast then
+            tes3.playAnimation({
+                reference = tes3.player,
+                mesh = "base_animKnA.nif",
+            })
+            tes3.playAnimation({
+                reference = tes3.player1stPerson,
+                mesh = "base_animkna.1st.nif",
+            })
+        else
+            if tes3.player.baseObject.female then
+                tes3.playAnimation({
+                    reference = tes3.player,
+                    mesh = "base_anim_female.nif",
+                })
+            else
+                tes3.playAnimation({
+                    reference = tes3.player,
+                    mesh = "base_anim.nif",
+                })
+            end
+            tes3.playAnimation({
+                reference = tes3.player1stPerson,
+                mesh = "base_anim.1st.nif",
+            })
+        end
+    end)
+
     -- hair & head
     timer.delayOneFrame(function()
         if config.data.change.race or config.data.change.bodyParts then
