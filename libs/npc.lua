@@ -49,7 +49,7 @@ function this.getRaceBaseBodyPart(reference, index)
     end
     for name, id in pairs(tes3.activeBodyPart) do
         local bodyPartData = raceBodyPart[name]
-        if id == index and bodyPartData and bodyData[bodyPartData] then
+        if id == index and bodyPartData then
             return bodyData[bodyPartData] or maleBodyData[bodyPartData]
         end
     end

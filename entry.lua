@@ -324,7 +324,10 @@ local function bodyPartAssignedCallback(e)
     if (e.reference == tes3.player or e.reference == tes3.player1stPerson) and playerLib.bodyPartsChanged and
             (e.index ~= tes3.activeBodyPart.hair and e.index ~= tes3.activeBodyPart.head) then
 
-        e.bodyPart = npc.getRaceBaseBodyPart(e.reference, e.index)
+        local newPart = npc.getRaceBaseBodyPart(e.reference, e.index)
+        if newPart then
+            e.bodyPart = npc.getRaceBaseBodyPart(e.reference, e.index)
+        end
     else
         local savedBodyPart = npc.getSavedBodyPart(e.reference, e.index)
         if savedBodyPart then
