@@ -148,11 +148,24 @@ local function finishStatChanges()
     if tes3.mobilePlayer.restoration.base * 2 + additiveVal >= 63 then
         tes3.addSpell{reference = tes3.player, spell = "hearth heal"}
     end
-    for _, spell in pairs(tes3.mobilePlayer.object.spells) do
-        if spell.castType == tes3.spellType.power then
-            tes3.mobilePlayer:rechargePower(spell)
+    if config.data.misc.rechargePower then
+        for _, spell in pairs(tes3.player.object.race.abilities) do
+            if spell.castType == tes3.spellType.power then
+                tes3.mobilePlayer:rechargePower(spell)
+            end
+        end
+        for _, spell in pairs(tes3.mobilePlayer.birthsign.spells) do
+            if spell.castType == tes3.spellType.power then
+                tes3.mobilePlayer:rechargePower(spell)
+            end
+        end
+        for _, spell in pairs(tes3.player.object.spells) do
+            if spell.castType == tes3.spellType.power and spell.id ~= this.summonSpellId then
+                tes3.mobilePlayer:rechargePower(spell)
+            end
         end
     end
+    tes3.mobilePlayer:setPowerUseTimestamp(tes3.getObject(this.summonSpellId), tes3.getSimulationTimestamp())
 
     tes3.player:updateEquipment()
     tes3.player1stPerson:updateEquipment()
