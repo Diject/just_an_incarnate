@@ -297,6 +297,7 @@ function this.registerModConfig()
         local respawnPage = template:createPage{label = "Respawn"}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "delay"}, label = "Delay before respawn", limits = {min = 2, max = 10}}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "safeTime"}, label = "Safe time after respawn", limits = {min = 0, max = 10}}
+
         local interiorGroup = respawnPage:createCategory{label = "Respawn after death in an interior cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "divineMarker"}, label = "On an imperial shrine"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "templeMarker"}, label = "On an Almsivi shrine"}
@@ -305,6 +306,7 @@ function this.registerModConfig()
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "interiorDoorMarker"}, label = "Near a door in the current cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exitFromInterior"}, label = "Near the exit door leading to exterior cell from the current one"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "recall"}, label = "On the recall mark"}
+
         local exteriorGroup = respawnPage:createCategory{label = "Respawn after death in an exterior cell"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "divineMarker"}, label = "On an imperial shrine"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "templeMarker"}, label = "On an Almsivi shrine"}
@@ -315,17 +317,25 @@ function this.registerModConfig()
 
     do
         local penaltyPage = template:createPage{label = "Penalties"}
-        createLabel{self = penaltyPage, label = "Penalties applied to the player after death", labelColor = tes3.palette.headerColor}
-        createYesNo{self = penaltyPage, config = {path = "decrease", name = "combine"}, label = "Can these penalties be combined in one death? Otherwise, only leveldown will apply if the conditions for this are met"}
-        createLabel{self = penaltyPage, label = "Decrease the player's level and all gained attributes for that level", labelColor = tes3.palette.bigAnswerOverColor}
-        createNumberEdit{self = penaltyPage, config = {path = "decrease.level", name = "count"}, label = "The value by which the player's level will be reduced", limits = {min = 0}}
-        createNumberEdit{self = penaltyPage, config = {path = "decrease.level", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
+        createLabel{self = penaltyPage, label = "Penalties and bonuses applied to the player after death", labelColor = tes3.palette.headerColor}
 
-        createLabel{self = penaltyPage, label = "Decrease player's last increased skills", labelColor = tes3.palette.bigAnswerOverColor}
-        createNumberEdit{self = penaltyPage, config = {path = "decrease.skill", name = "count"}, label = "The number of skillups that will be reduced", limits = {min = 0}}
-        createNumberEdit{self = penaltyPage, config = {path = "decrease.skill", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
-        createYesNo{self = penaltyPage, config = {path = "decrease.skill.levelUp", name = "progress"}, label = "Remove progression in levelup for the removed skill"}
-        createYesNo{self = penaltyPage, config = {path = "decrease.skill.levelUp", name = "attributes"}, label = "Remove progression in attribute levelup for the removed skill"}
+        createYesNo{self = penaltyPage, config = {path = "misc", name = "rechargePower"}, label = "Recharge player spells"}
+
+        createYesNo{self = penaltyPage, config = {path = "misc.bounty", name = "reset"}, label = "Reset the crime bounty"}
+        createYesNo{self = penaltyPage, config = {path = "misc.bounty", name = "removeStolen"}, label = "Remove stolen items"}
+
+        local progressPenatiesPage = penaltyPage:createCategory{label = "Progression penalties"}
+        createYesNo{self = progressPenatiesPage, config = {path = "decrease", name = "combine"}, label = "Can these penalties be combined in one death? Otherwise, only leveldown will apply if the conditions for this are met"}
+
+        createLabel{self = progressPenatiesPage, label = "Decrease the player's level and all gained attributes for that level after death", labelColor = tes3.palette.bigAnswerOverColor}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.level", name = "count"}, label = "The value by which the player's level will be reduced", limits = {min = 0}}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.level", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
+
+        createLabel{self = progressPenatiesPage, label = "Decrease player's last increased skills after death", labelColor = tes3.palette.bigAnswerOverColor}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.skill", name = "count"}, label = "The number of skillups that will be reduced", limits = {min = 0}}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.skill", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
+        createYesNo{self = progressPenatiesPage, config = {path = "decrease.skill.levelUp", name = "progress"}, label = "Remove progression in levelup for the removed skill"}
+        createYesNo{self = progressPenatiesPage, config = {path = "decrease.skill.levelUp", name = "attributes"}, label = "Remove progression in attribute levelup for the removed skill"}
 
         createLabel{self = penaltyPage, label = ""}
         createLabel{self = penaltyPage, label = "Change player parameters to random ones after death", labelColor = tes3.palette.bigAnswerOverColor}
@@ -334,7 +344,7 @@ function this.registerModConfig()
         createYesNo{self = penaltyPage, config = {path = "change", name = "sex"}, label = "Change sex"}
         createYesNo{self = penaltyPage, config = {path = "change", name = "sign"}, label = "Change birthsign"}
         local classGroup = penaltyPage:createCategory{label = ""}
-        createYesNo{self = penaltyPage, config = {path = "change.class", name = "enbled"}, label = "Change class"}
+        createYesNo{self = classGroup, config = {path = "change.class", name = "enbled"}, label = "Change class"}
         local changeClassToPlCustom = createNumberEdit{self = classGroup, config = {path = "change.class", name = "chanceToPlayerCustom"}, label = "Chance in % to change player's class to the class from another player's character from another game session", limits = {min = 0, max = 100}, maxForLinkedGroup = 100}
         local changeClassToCustom = createNumberEdit{self = classGroup, config = {path = "change.class", name = "chanceToCustom"}, label = "Chance in % to change player's class to the class with random major/minor skills", limits = {min = 0, max = 100}, maxForLinkedGroup = 100}
         table.insert(changeClassToPlCustom.customLinkedElements, changeClassToCustom) ---@diagnostic disable-line: undefined-field
