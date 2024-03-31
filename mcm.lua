@@ -5,6 +5,8 @@ local mcm = mwse.mcm
 
 local this = {}
 
+local isShiftDown = false
+
 ---@type mwseMCMTemplate|nil
 this.modData = nil
 
@@ -50,13 +52,19 @@ local function createYesNo(params)
     local variable = params.variable or {}
     variable.setter = function(self, newValue)
         local path = params.config.path.."."..params.config.name
-        local configValue = config.getValueByPath(path)
-        if configValue ~= newValue then
-            if not config.setValueByPath(path, newValue) then
-                log("config value is not set", params.config.path.."."..params.config.name)
-            end
-            button.elements.label.color = getSettingColor(tes3.player)
+        if isShiftDown then
+            config.resetValueToGlobal(path)
+            button.elements.label.color = getSettingColor(false)
             button.elements.label:getTopLevelMenu():updateLayout()
+        else
+            local configValue = config.getValueByPath(path)
+            if configValue ~= newValue then
+                if not config.setValueByPath(path, newValue) then
+                    log("config value is not set", params.config.path.."."..params.config.name)
+                end
+                button.elements.label.color = getSettingColor(tes3.player)
+                button.elements.label:getTopLevelMenu():updateLayout()
+            end
         end
         if params.customCallback then params.customCallback(newValue) end
     end
@@ -71,6 +79,12 @@ local function createYesNo(params)
     button.postCreate = function(self)
         local _, isLocal = config.getValueByPath(params.config.path.."."..params.config.name)
         self.elements.label.color = getSettingColor(isLocal)
+        self.elements.button:register("destroy", function()
+            if isShiftDown then
+                local path = params.config.path.."."..params.config.name
+                config.resetValueToGlobal(path)
+            end
+        end)
         self.elements.label:getTopLevelMenu():updateLayout()
     end
     return button
@@ -106,11 +120,17 @@ local function createNumberEdit(params)
     end
 
     local function setValue(value)
+        local path = params.config.path.."."..params.config.name
+        if isShiftDown then
+            field.elements.inputField.text = tostring(config.resetValueToGlobal(path))
+            label.elements.label.color = getSettingColor(false)
+            label.elements.label:getTopLevelMenu():updateLayout()
+            return
+        end
         local val = tonumber(value)
         if not val then return end
         if params.limits.max and params.limits.max < val then val = params.limits.max end
         if params.limits.min and params.limits.min > val then val = params.limits.min end
-        local path = params.config.path.."."..params.config.name
         local configValue = getConfigValue()
         if configValue ~= val then
             if not config.setValueByPath(path, val) then
@@ -283,14 +303,40 @@ local function registerTemplate(self)
     return modData
 end
 
+--- @param e keyDownEventData|mouseButtonDownEventData|mouseWheelEventData
+local function keyDownEvent(e)
+    if e.isShiftDown then
+        isShiftDown = true
+    end
+end
+
+--- @param e keyDownEventData|mouseButtonDownEventData|mouseWheelEventData
+local function keyUpEvent(e)
+    if not e.isShiftDown then
+        isShiftDown = false
+    end
+end
+
 ---@param e tes3uiElement
 local function onClose(e)
     config.save()
+    event.unregister(tes3.event.keyUp, keyUpEvent)
+    event.unregister(tes3.event.keyDown, keyDownEvent)
+end
+
+local function onOpen()
+    isShiftDown = false
+    if not event.isRegistered(tes3.event.keyUp, keyUpEvent) then
+        event.register(tes3.event.keyUp, keyUpEvent)
+    end
+    if not event.isRegistered(tes3.event.keyDown, keyDownEvent) then
+        event.register(tes3.event.keyDown, keyDownEvent)
+    end
 end
 
 function this.registerModConfig()
 
-    local template = mcm.createTemplate{name = "Just an Incarnate", onClose = onClose}
+    local template = mcm.createTemplate{name = "Just an Incarnate", onClose = onClose, postCreate = onOpen}
     local mainPage = template:createPage{label = "Main"}
 
     do

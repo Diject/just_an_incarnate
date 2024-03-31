@@ -218,6 +218,15 @@ function this.setValueByPath(path, newValue)
     return advTable.setValueByPath(this.data, path, newValue)
 end
 
+function this.resetValueToGlobal(path)
+    local globalVal = advTable.getValueByPath(this.global, path)
+    if tes3.player then
+        advTable.setValueByPath(this.localConfig.config, path, nil)
+    end
+    advTable.setValueByPath(this.data, path, globalVal)
+    return globalVal
+end
+
 function this.save()
     mwse.saveConfig(globalStorageName, this.global)
 end
