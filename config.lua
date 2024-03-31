@@ -141,7 +141,7 @@ this.default = {
     text = {
         death = "You have met your destiny and no longer carry the burden of prophecy. You were a false incarnate.",
         itemPrefix = "Weak",
-        summonSpellDescription = "Teleports all false reincarnates from the current location to you",
+        summonSpellDescription = "Teleports all false incarnates from the current location to you",
     },
 }
 
