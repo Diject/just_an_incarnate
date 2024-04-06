@@ -167,6 +167,12 @@ local function finishStatChanges()
     end
     tes3.mobilePlayer:setPowerUseTimestamp(tes3.getObject(this.summonSpellId), tes3.getSimulationTimestamp())
 
+    -- destroy the menus that shows after character recreation
+    local menuStat = tes3ui.findMenu("MenuStat")
+    if menuStat then menuStat:destroy() end
+    local menuMagic = tes3ui.findMenu("MenuMagic")
+    if menuMagic then menuMagic:destroy() end
+
     tes3.player:updateEquipment()
     tes3.player1stPerson:updateEquipment()
     -- tes3.player:updateSceneGraph()
