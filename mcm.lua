@@ -363,7 +363,18 @@ end
 function this.registerModConfig()
 
     local template = mcm.createTemplate{name = "Just an Incarnate", onClose = onClose, postCreate = onOpen}
-    local mainPage = template:createPage{label = "Main"}
+    do
+        local mainPage = template:createPage{label = "Main"}
+        createLabel{self = mainPage, label = "This mod allows to respawn after death. With or without penalties.", labelColor = tes3.palette.headerColor}
+        createLabel{self = mainPage, label = "All the settings will be either local (individual for the character) "..
+            "or global (will apply by default to each player character unless the setting has become local). "..
+            "Local settings will be highlighted in yellow. "..
+            "If you are ingame, any settings you change will become local. "..
+            "If you want to reset a setting to global, hold down the shift key and change that setting. "..
+            "If you want to set global value of the setting, hold down the alt key. "..
+            "If you want to reset/set global on all settings from a tab, select this tab, hold down shift/alt and change the tab."
+        }
+    end
 
     do
         local respawnPage = template:createPage{label = "Respawn"}
