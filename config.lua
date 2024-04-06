@@ -4,6 +4,7 @@ local log = include("diject.just_an_incarnate.utils.log")
 
 local globalStorageName = "JustAnIncarnateByDiject_Config"
 local localStorageName = "localConfig"
+local version = 0
 
 local this = {}
 
@@ -167,6 +168,7 @@ end
 
 ---@class config.localData
 this.localDefault = {
+    version = version,
     count = 0, -- number of deaths
     id = nil,
     config = {},
@@ -245,6 +247,10 @@ end
 
 function this.save()
     mwse.saveConfig(globalStorageName, this.global)
+end
+
+function this.updateVersionInPlayerStorage()
+    this.localConfig.version = version
 end
 
 return this

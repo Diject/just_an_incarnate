@@ -46,6 +46,7 @@ event.register(tes3.event.load, loadCallback, {priority = -9999})
 
 --- @param e saveEventData
 local function saveCallback(e)
+    config.updateVersionInPlayerStorage()
     local class = customClassLib.getCustomClassRecord()
     if not class then return end
     class.modified = true
