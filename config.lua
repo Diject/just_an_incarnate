@@ -1,5 +1,6 @@
 local advTable = include("diject.just_an_incarnate.utils.table")
 local localStorage = include("diject.just_an_incarnate.storage.localStorage")
+local log = include("diject.just_an_incarnate.utils.log")
 
 local globalStorageName = "JustAnIncarnateByDiject_Config"
 local localStorageName = "localConfig"
@@ -214,9 +215,20 @@ end
 function this.setValueByPath(path, newValue)
     if tes3.player then
         advTable.setValueByPath(this.localConfig.config, path, newValue)
+        log("Local config value", path, newValue)
     else
         advTable.setValueByPath(this.global, path, newValue)
+        log("Global config value", path, newValue)
     end
+    return advTable.setValueByPath(this.data, path, newValue)
+end
+
+---@param path string
+---@param newValue any
+---@return boolean success
+function this.setGlobalValueByPath(path, newValue)
+    advTable.setValueByPath(this.global, path, newValue)
+    log("Global config value", path, newValue)
     return advTable.setValueByPath(this.data, path, newValue)
 end
 
@@ -224,7 +236,9 @@ function this.resetValueToGlobal(path)
     local globalVal = advTable.getValueByPath(this.global, path)
     if tes3.player then
         advTable.setValueByPath(this.localConfig.config, path, nil)
+        log("Local config value", path, "nil")
     end
+    log("Global config value", path, globalVal)
     advTable.setValueByPath(this.data, path, globalVal)
     return globalVal
 end
