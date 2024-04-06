@@ -385,16 +385,16 @@ function this.registerModConfig()
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "divineMarker"}, label = "On an imperial shrine"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "templeMarker"}, label = "On an Almsivi shrine"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "prisonMarker"}, label = "On a prison marker"}
-        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exteriorDoorMarker"}, label = "Near the door in a random exterior cell"}
+        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exteriorDoorMarker"}, label = "Near a door in a random exterior cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "interiorDoorMarker"}, label = "Near a door in the current cell"}
-        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exitFromInterior"}, label = "Near the exit door leading to exterior cell from the current one"}
+        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exitFromInterior"}, label = "Near an exit door leading to exterior cell from the current one"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "recall"}, label = "On the recall mark"}
 
         local exteriorGroup = respawnPage:createCategory{label = "Respawn after death in an exterior cell"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "divineMarker"}, label = "On an imperial shrine"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "templeMarker"}, label = "On an Almsivi shrine"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "prisonMarker"}, label = "On a prison marker"}
-        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "exteriorDoorMarker"}, label = "Near the door in a random exterior cell"}
+        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "exteriorDoorMarker"}, label = "Near a door in a random exterior cell"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "recall"}, label = "On the recall mark"}
     end
 
