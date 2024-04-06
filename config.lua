@@ -36,6 +36,8 @@ this.default = {
             removeStolen = true,
         },
         rechargePower = true,
+        sendDeathEvent = true,
+        sendLoadedEvent = true,
     },
     change = {
         race = true,

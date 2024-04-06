@@ -55,6 +55,14 @@ event.register(tes3.event.save, saveCallback)
 
 local function processDead()
 
+    if config.data.misc.sendDeathEvent then
+        local currentHealth = tes3.mobilePlayer.health.current
+        tes3.mobilePlayer.health.current = 0
+        event.trigger(tes3.event.death, {reference = tes3.player, mobile = tes3.mobilePlayer})
+        event.trigger(tes3.event.damaged, {reference = tes3.player, mobile = tes3.mobilePlayer, damage = 0, killingBlow = true, source = tes3.damageSource.script})
+        tes3.mobilePlayer.health.current = currentHealth
+    end
+
     local isWerewolf = tes3.mobilePlayer.werewolf
     if isWerewolf then
         tes3.runLegacyScript{command = "set PCWerewolf to 0", reference = tes3.player} ---@diagnostic disable-line: missing-fields
@@ -225,6 +233,14 @@ local function processDead()
         tes3.setPlayerControlState{enabled = true,}
         tes3.mobilePlayer.paralyze = 0
         tes3.cancelAnimationLoop{reference = tes3.player}
+        if config.data.misc.sendLoadedEvent then
+            local lastLoadedFile = tes3.dataHandler.nonDynamicData.lastLoadedFile
+            event.trigger(tes3.event.loaded, {
+                filename = lastLoadedFile and lastLoadedFile.filename or nil,
+                newGame = false,
+                quickload = false
+            })
+        end
     end}
 end
 

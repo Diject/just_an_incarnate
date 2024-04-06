@@ -472,6 +472,15 @@ function this.registerModConfig()
         createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "goldPercent"}, label = "Transfer this % of your gold", limits = {min = 0, max = 100}}
     end
 
+    do
+        local compatibilityPage = template:createPage{label = "Compatibility"}
+        createLabel{self = compatibilityPage, label = "The settings about compatibility with other mods. They will help or break other mods", labelColor = tes3.palette.headerColor}
+        createYesNo{self = compatibilityPage, config = {path = "misc", name = "sendDeathEvent"}, label = "Send event about player's death"}
+        createLabel{self = compatibilityPage, label = "This will influence mods that track player deaths"}
+        createYesNo{self = compatibilityPage, config = {path = "misc", name = "sendLoadedEvent"}, label = "Send game loaded event after player's resurrection"}
+        createLabel{self = compatibilityPage, label = "Helps to update player state after death for some mods"}
+    end
+
     -- template:register()
     this.modData = registerTemplate(template)
 end
