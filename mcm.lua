@@ -374,10 +374,13 @@ function this.registerModConfig()
             "If you want to set global value of the setting, hold down the alt key. "..
             "If you want to reset/set global on all settings from a tab, select this tab, hold down shift/alt and change the tab."
         }
+        createYesNo{self = mainPage, config = {path = "revive", name = "enabled"}, label = "Revive player character after death"}
+        createYesNo{self = mainPage, config = {path = "map", name = "enabled"}, label = "Spawn died characters from other playthroughs"}
     end
 
     do
         local respawnPage = template:createPage{label = "Respawn"}
+        createYesNo{self = respawnPage, config = {path = "revive", name = "enabled"}, label = "Revive player character after death"}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "delay"}, label = "Delay before respawn", limits = {min = 2, max = 10}}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "safeTime"}, label = "Safe time after respawn", limits = {min = 0, max = 10}}
 
@@ -473,6 +476,7 @@ function this.registerModConfig()
         local mapPage = template:createPage{label = "Map"}
         createLabel{self = mapPage, label = "The settings related to spawning characters from other playthroughs", labelColor = tes3.palette.headerColor}
 
+        createYesNo{self = mapPage, config = {path = "map", name = "enabled"}, label = "Spawn died characters from other playthroughs"}
         createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "count"}, label = "Number of attempts to spawn a character per cell (0 - disabled)", limits = {min = 0}}
         createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "chance"}, label = "Chance to spawn per each attempt", limits = {min = 0, max = 100}}
         createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "interval"}, label = "Interval in game hours between attempts", limits = {min = 0}}

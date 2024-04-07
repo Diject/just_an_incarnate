@@ -258,7 +258,7 @@ local function getDamageMul()
 end
 
 local function onDamage(e)
-    if e.reference ~= tes3.player then
+    if e.reference ~= tes3.player or not config.data.revive.enabled then
         return
     end
 
@@ -309,7 +309,7 @@ event.register(tes3.event.damage, onDamage, {priority = onDamagePriority})
 
 --- @param e cellActivatedEventData
 local function cellActivatedCallback(e)
-    if not localStorage.isReady() then return end
+    if not localStorage.isReady() or not config.data.map.enabled then return end
     local spawner = mapSpawner:new(e.cell, config.localConfig.id, localStorage.data)
 
     local cellInfo = spawner:getCellLocalInfo()

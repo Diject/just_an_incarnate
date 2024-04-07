@@ -11,6 +11,7 @@ local this = {}
 ---@class config.globalData
 this.default = {
     revive = {
+        enabled = true,
         delay = 5,
         safeTime = 3,
         interior = {
@@ -101,6 +102,7 @@ this.default = {
         },
     },
     map = {
+        enabled = true,
         ---@class jai.config.mapSpawn
         spawn = {
             interval = 72, -- game hours
