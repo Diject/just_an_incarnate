@@ -419,3 +419,12 @@ local function uiSpellTooltipCallback(e)
     end
 end
 event.register(tes3.event.uiSpellTooltip, uiSpellTooltipCallback)
+
+--- @param e deathEventData
+local function deathCallback(e)
+    if e.reference ~= tes3.player or not config.data.revive.enabled then
+        return
+    end
+    dataStorage.savePlayerDeathInfo(config.localConfig.id)
+end
+event.register(tes3.event.death, deathCallback)
