@@ -20,7 +20,7 @@ this.eventTypes = {
 ---@field skillId tes3.skill|nil
 ---@field raiseSource tes3.skillRaiseSource|nil
 ---@field attributes table<number>|nil
----@field health number|nil
+---@field health number|nil the value by which health has changed
 ---@field spellId string|nil
 
 function this.playerData()
@@ -35,7 +35,7 @@ function this.initPlayer()
         table.insert(attributes, 0)
     end
     storage.data[logerLabel] = {{event = this.eventTypes.levelUp, time = tes3.getSimulationTimestamp(), value = object.level,
-        attributes = attributes, health = tes3.mobilePlayer.health.base},}
+        attributes = attributes, health = 0},}
 end
 
 ---@param e skillRaisedEventData

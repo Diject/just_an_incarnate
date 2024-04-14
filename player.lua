@@ -497,7 +497,7 @@ function this.levelDown(decrBy)
         ---@type dataLogger.data.struct
         local data = playerLogData[i]
         if data.event == playerLogger.eventTypes["levelUp"] then
-            if data.value == levelTo then
+            if data.value <= levelTo then
                 tes3.runLegacyScript{command = "setlevel "..tostring(levelTo), reference = player} ---@diagnostic disable-line: missing-fields
                 log("level decreased: to", levelTo)
                 return
@@ -614,6 +614,7 @@ local function addRestoreSpells_timer()
     tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_skills_3"}
 end
 
+-- except dynamic stats like health
 function this.addRestoreSpells(forTime)
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_attributes"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_effects"}
@@ -623,6 +624,16 @@ function this.addRestoreSpells(forTime)
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_3"}
     timer.register("JAIByDiject_addRestoreSpells_timer", addRestoreSpells_timer)
     timer.start{duration = forTime, callback = "JAIByDiject_addRestoreSpells_timer"}
+end
+
+local function addDynamicStatsRestoreSpells_timer()
+    tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_stats"}
+end
+
+function this.addDynamicStatsRestoreSpells(forTime)
+    tes3.addSpell{reference = tes3.player, spell = "jai_curespell_stats"}
+    timer.register("JAIByDiject_addDynamicStatsRestoreSpells_timer", addDynamicStatsRestoreSpells_timer)
+    timer.start{duration = forTime, callback = "JAIByDiject_addDynamicStatsRestoreSpells_timer"}
 end
 
 
