@@ -120,38 +120,56 @@ local function createNumberEdit(params)
 
     if not params.limits then params.limits = {min = -math.huge, max = math.huge} end
 
+    local path = params.config.path.."."..params.config.name
+
     ---@type mwseMCMTextField
     local field
     local label
 
     local function getConfigValue()
-        local path = params.config.path.."."..params.config.name
         local value = config.getValueByPath(path)
         if value == nil then log("config value not found", path) end
         return value or 0
     end
 
+    local function resetValueToGlobal()
+        field.elements.inputField.text = tostring(config.resetValueToGlobal(path))
+        label.elements.label.color = getSettingColor(false)
+        label.elements.label:getTopLevelMenu():updateLayout()
+    end
+
+    local function makeValueGlobal(val)
+        config.setGlobalValueByPath(path, val)
+        config.resetValueToGlobal(path)
+        field.elements.inputField.text = tostring(val)
+        label.elements.label.color = getSettingColor(false)
+        label.elements.label:getTopLevelMenu():updateLayout()
+    end
+
     local function setValue(value)
-        local path = params.config.path.."."..params.config.name
         local val = tonumber(value)
         if not val then return end
         if params.limits.max and params.limits.max < val then val = params.limits.max end
         if params.limits.min and params.limits.min > val then val = params.limits.min end
         local configValue = getConfigValue()
         if isShiftDown then
-            field.elements.inputField.text = tostring(config.resetValueToGlobal(path))
-            label.elements.label.color = getSettingColor(false)
-            label.elements.label:getTopLevelMenu():updateLayout()
+            resetValueToGlobal()
+            for _, elem in pairs(field.customLinkedElements or {}) do
+                if elem and elem ~= field then
+                    elem.resetValueToGlobal()
+                end
+            end
             return
-        elseif isAltDown then
-            config.setGlobalValueByPath(path, val)
-            config.resetValueToGlobal(path)
-            field.elements.inputField.text = tostring(val)
-            label.elements.label.color = getSettingColor(false)
-            label.elements.label:getTopLevelMenu():updateLayout()
-            return
+        -- elseif isAltDown then
+        --     makeValueGlobal(val)
+        --     for _, elem in pairs(field.customLinkedElements or {}) do
+        --         if elem and elem ~= field then
+        --             elem.makeValueGlobal(elem.customGetValue())
+        --         end
+        --     end
+        --     return
         end
-        if configValue ~= val then
+        if configValue ~= val or isAltDown then
             if not config.setValueByPath(path, val) then
                 log("config value is not set", params.config.path.."."..params.config.name)
             end
@@ -172,12 +190,17 @@ local function createNumberEdit(params)
                         local elemVal = tonumber(elem.customGetValue()) or elem.customGetConfigValue()
                         local v = math.min(elemVal, sum)
                         elem.customSetValue(elemVal - v)
+                        if isAltDown then
+                            elem.makeValueGlobal(elemVal - v)
+                        end
                         sum = sum - v
                         if sum <= 0 then break end -- neat part
                     end
                 end
             end
-
+            if isAltDown then
+                makeValueGlobal(val)
+            end
             label.elements.label:getTopLevelMenu():updateLayout()
         end
     end
@@ -283,6 +306,8 @@ local function createNumberEdit(params)
         end
     }
 
+    field.resetValueToGlobal = resetValueToGlobal ---@diagnostic disable-line: inject-field
+    field.makeValueGlobal = makeValueGlobal ---@diagnostic disable-line: inject-field
     field.customSetValue = setValue ---@diagnostic disable-line: inject-field
     field.customGetValue = getElementValue ---@diagnostic disable-line: inject-field
     field.customGetConfigValue = getConfigValue ---@diagnostic disable-line: inject-field
