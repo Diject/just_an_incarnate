@@ -309,6 +309,19 @@ end
 
 event.register(tes3.event.damage, onDamage, {priority = onDamagePriority})
 
+local randomizerConfig = include("Morrowind_World_Randomizer.storage")
+if randomizerConfig and (not randomizerConfig.version or randomizerConfig.version <= 6) then
+
+    local randomizer = include("Morrowind_World_Randomizer.Randomizer")
+    --- @param e mobileActivatedEventData
+    local function mobileActivatedCallback(e)
+        if e.reference.baseObject.id:find(playerLib.npcTemplate) then
+            randomizer.StopRandomization(e.reference)
+        end
+    end
+    event.register(tes3.event.mobileActivated, mobileActivatedCallback, {priority = 10})
+end
+
 --- @param e mobileActivatedEventData
 local function mobileActivatedCallback(e)
     if e.mobile.actorType == tes3.actorType.npc and e.mobile.chameleon > 0 then

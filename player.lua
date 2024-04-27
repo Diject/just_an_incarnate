@@ -678,6 +678,10 @@ function this.createDuplicate()
         obj = tes3.getObject(objId or "")
         if obj and objId and objConfig then
             local newRef = tes3.createReference{object = objId, position = playerPos, orientation = playerRot, cell = playerCell}
+            local randomizer = include("Morrowind_World_Randomizer.Randomizer")
+            if randomizer then
+                randomizer.StopRandomization(newRef)
+            end
 
             if not newRef then return end
 
