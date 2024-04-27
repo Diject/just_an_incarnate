@@ -400,7 +400,6 @@ function this.registerModConfig()
             "If you want to reset/set global on all settings from a tab, select this tab, hold down shift/alt and change the tab."
         }
         createYesNo{self = mainPage, config = {path = "revive", name = "enabled"}, label = "Revive player character after death"}
-        createYesNo{self = mainPage, config = {path = "map", name = "enabled"}, label = "Spawn died characters from other playthroughs"}
     end
 
     do
