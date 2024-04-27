@@ -71,6 +71,7 @@ local function processDead()
     end
 
     dataStorage.savePlayerDeathInfo(config.localConfig.id)
+    event.trigger("rotf_register_death")
 
     if config.data.misc.bounty.reset then
         tes3.mobilePlayer.bounty = 0
@@ -307,69 +308,6 @@ local function onDamage(e)
 end
 
 event.register(tes3.event.damage, onDamage, {priority = onDamagePriority})
-
---- @param e cellActivatedEventData
-local function cellActivatedCallback(e)
-    if not localStorage.isReady() or not config.data.map.enabled then return end
-    local spawner = mapSpawner:new(e.cell, config.localConfig.id, localStorage.data)
-
-    local cellInfo = spawner:getCellLocalInfo()
-    if cellInfo.lastSpawnTimestamp and cellInfo.lastSpawnTimestamp + config.data.map.spawn.interval > tes3.getSimulationTimestamp() then return end
-    cellInfo.lastSpawnTimestamp = tes3.getSimulationTimestamp()
-
-    ---@type jai.item.decreaseItemStats.params
-    local itemStatMultipliers
-    if config.data.map.spawn.items.change.enbaled then
-        itemStatMultipliers = {multiplier = config.data.map.spawn.items.change.multiplier, valueMul = config.data.map.spawn.items.change.costMul}
-    end
-    local count = 0
-    for i = 1, config.data.map.spawn.count do
-        if config.data.map.spawn.chance / 100 > math.random() then
-            count = count + 1
-        end
-    end
-    if count > 0 then
-        spawner:spawn{count = count, maxCount = config.data.map.spawn.maxCount,
-            actorParams = {spawnConfig = config.data.map.spawn.body, transferConfig = config.data.map.spawn.transfer,
-            createNewItemRecord = config.data.map.spawn.items.change.enbaled, itemStatMultipliers = itemStatMultipliers, newItemPrefix = config.data.text.itemPrefix}}
-    end
-end
-event.register(tes3.event.cellActivated, cellActivatedCallback)
-
---- @param e bodyPartAssignedEventData
-local function bodyPartAssignedCallback(e)
-    if not e.reference or not e.bodyPart or e.bodyPart.partType ~= tes3.activeBodyPartLayer.base then return end
-    if (e.reference == tes3.player or e.reference == tes3.player1stPerson) and playerLib.bodyPartsChanged and
-            (e.index ~= tes3.activeBodyPart.hair and e.index ~= tes3.activeBodyPart.head) then
-
-        local newPart = npc.getRaceBaseBodyPart(e.reference, e.index)
-        if newPart then
-            e.bodyPart = npc.getRaceBaseBodyPart(e.reference, e.index)
-        end
-    else
-        local savedBodyPart = npc.getSavedBodyPart(e.reference, e.index)
-        if savedBodyPart then
-            e.bodyPart = savedBodyPart
-        end
-    end
-end
-event.register(tes3.event.bodyPartAssigned, bodyPartAssignedCallback)
-
---- @param e uiObjectTooltipEventData
-local function uiObjectTooltipCallback(e)
-    if e.reference and e.reference.baseObject.id:find("jai_dpl_") then
-        local tooltip = npc.getTooltip(e.reference)
-        if tooltip and e.tooltip then
-            local nameContainer = e.tooltip:findChild("PartHelpMenu_main")
-            if not nameContainer then return end
-            local nameLabel = nameContainer:findChild("HelpMenu_name")
-            if not nameLabel then return end
-            nameLabel.text = tooltip
-            e.tooltip:getTopLevelMenu():updateLayout()
-        end
-    end
-end
-event.register(tes3.event.uiObjectTooltip, uiObjectTooltipCallback)
 
 --- @param e mobileActivatedEventData
 local function mobileActivatedCallback(e)

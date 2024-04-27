@@ -6,6 +6,8 @@ local dataStorage = include("diject.just_an_incarnate.storage.dataStorage")
 local npc = include("diject.just_an_incarnate.libs.npc")
 local config = include("diject.just_an_incarnate.config")
 local localStorage = include("diject.just_an_incarnate.storage.localStorage")
+local bodypartChanger = require("diject.mwse_libs.bodypartChanger")
+local tooltipChanger = require("diject.mwse_libs.tooltipChanger")
 
 local this = {}
 
@@ -680,11 +682,11 @@ function this.createDuplicate()
             if not newRef then return end
 
             npc.transferStats(tes3.player, newRef)
-            npc.saveTooltip(newRef, tes3.player.object.name..(config.localConfig.count > 0 and " The "..tostring(config.localConfig.count + 1).."th" or ""))
+            tooltipChanger.saveTooltip(newRef, tes3.player.object.name..(config.localConfig.count > 0 and " The "..tostring(config.localConfig.count + 1).."th" or ""))
             localStorage.getStorage(newRef).isPlayerCopy = true
 
             local raceData = dataStorage.getRaceData(tes3.player.baseObject.race)
-            npc.saveBodyParts(newRef, raceData, {hair = tes3.player.baseObject.hair.id, head = tes3.player.baseObject.head.id})
+            bodypartChanger.saveBodyParts(newRef, raceData, {hair = tes3.player.baseObject.hair.id, head = tes3.player.baseObject.head.id})
             newRef:updateEquipment()
             for stat, mulPercent in pairs(objConfig.stats) do
                 local value = mulPercent / 100 * tes3.mobilePlayer[stat].base

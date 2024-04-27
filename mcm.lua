@@ -498,47 +498,6 @@ function this.registerModConfig()
     end
 
     do
-        local mapPage = template:createPage{label = "Map"}
-        createLabel{self = mapPage, label = "The settings related to spawning characters from other playthroughs", labelColor = tes3.palette.headerColor}
-
-        createYesNo{self = mapPage, config = {path = "map", name = "enabled"}, label = "Spawn died characters from other playthroughs"}
-        createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "count"}, label = "Number of attempts to spawn a character per cell (0 - disabled)", limits = {min = 0}}
-        createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "chance"}, label = "Chance to spawn per each attempt", limits = {min = 0, max = 100}}
-        createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "interval"}, label = "Interval in game hours between attempts", limits = {min = 0}}
-        createNumberEdit{self = mapPage, config = {path = "map.spawn", name = "maxCount"}, label = "Maximum number of spawned characters per cell", limits = {min = 0}}
-
-        local itemGroup = mapPage:createCategory{label = "Inventory of the spawned characters"}
-        createYesNo{self = itemGroup, config = {path = "map.spawn.items.change", name = "enbaled"}, label = "Recreate items in the inventory of a created character with unique ids. It will prevent quest abuse"}
-        createNumberEdit{self = itemGroup, config = {path = "map.spawn.items.change", name = "multiplier"}, label = "Multiplier for stats for these recreated items", limits = {min = 0, max = 1}}
-        createNumberEdit{self = itemGroup, config = {path = "map.spawn.items.change", name = "costMul"}, label = "Multiplier for the value of these recreated items", limits = {min = 0, max = 1}}
-
-        local bodyGroup = mapPage:createCategory{label = "Copy of the character"}
-        local spawnBody = createNumberEdit{self = bodyGroup, config = {path = "map.spawn.body", name = "chance"}, label = "Chance in % to create a copy of the player after death. If the copy is alive, it will be transparent", limits = {min = 0, max = 100}, maxForLinkedGroup = 100}
-        createNumberEdit{self = bodyGroup, config = {path = "map.spawn.body", name = "chanceToCorpse"}, label = "Chance in % to kill the copy (it will spawn as a dead)", limits = {min = 0, max = 100}}
-        createNumberEdit{self = bodyGroup, config = {path = "map.spawn.body.stats", name = "health"}, label = "Health multiplier (in %) for the copy", limits = {min = 0}}
-        createNumberEdit{self = bodyGroup, config = {path = "map.spawn.body.stats", name = "fatigue"}, label = "Fatigue multiplier (in %) for the copy", limits = {min = 0}}
-        createNumberEdit{self = bodyGroup, config = {path = "map.spawn.body.stats", name = "magicka"}, label = "Magicka multiplier (in %) for the copy", limits = {min = 0}}
-
-        local creaGroup = mapPage:createCategory{label = "Creature with the player's stats"}
-        local spawnCrea = createNumberEdit{self = creaGroup, config = {path = "map.spawn.creature", name = "chance"}, label = "Chance in % to create a creature with the player's stats", limits = {min = 0, max = 100}, maxForLinkedGroup = 100}
-        createNumberEdit{self = creaGroup, config = {path = "map.spawn.creature", name = "chanceToCorpse"}, label = "Chance in % to kill the creature (it will spawn as a dead)", limits = {min = 0, max = 100}}
-        createNumberEdit{self = creaGroup, config = {path = "map.spawn.creature.stats", name = "health"}, label = "Health multiplier (in %) for the creature", limits = {min = 0}}
-        createNumberEdit{self = creaGroup, config = {path = "map.spawn.creature.stats", name = "fatigue"}, label = "Fatigue multiplier (in %) for the creature", limits = {min = 0}}
-        createNumberEdit{self = creaGroup, config = {path = "map.spawn.creature.stats", name = "magicka"}, label = "Magicka multiplier (in %) for the creature", limits = {min = 0}}
-        table.insert(spawnBody.customLinkedElements, spawnCrea) ---@diagnostic disable-line: undefined-field
-        table.insert(spawnCrea.customLinkedElements, spawnBody) ---@diagnostic disable-line: undefined-field
-
-        local transferGroup = mapPage:createCategory{label = "Transferring items from the player to the copy(creature)"}
-        createLabel{self = transferGroup, label = "Most of the settings below are % of item stacks in your inventory. Each stack may contain several identical items"}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "equipedItems"}, label = "Transfer this % of equipped items", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "equipment"}, label = "Transfer this % of items that you can equip but are currently unequipped", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "magicItems"}, label = "Transfer this % of items like scrolls or potions", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "misc"}, label = "Transfer this % of miscellaneous items", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "books"}, label = "Transfer this % of books", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "map.spawn.transfer", name = "goldPercent"}, label = "Transfer this % of your gold", limits = {min = 0, max = 100}}
-    end
-
-    do
         local compatibilityPage = template:createPage{label = "Compatibility"}
         createLabel{self = compatibilityPage, label = "The settings about compatibility with other mods. They will help or break other mods", labelColor = tes3.palette.headerColor}
         createYesNo{self = compatibilityPage, config = {path = "misc", name = "sendDeathEvent"}, label = "Send event about player's death"}
