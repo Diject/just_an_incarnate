@@ -71,7 +71,9 @@ local function processDead()
     end
 
     dataStorage.savePlayerDeathInfo(config.localConfig.id)
-    event.trigger("rotf_register_death")
+    if not config.data.misc.sendDeathEvent then
+        event.trigger("rotf_register_death")
+    end
 
     if config.data.misc.bounty.reset then
         tes3.mobilePlayer.bounty = 0
