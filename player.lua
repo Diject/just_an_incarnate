@@ -743,11 +743,15 @@ function this.createDuplicate()
                 ::continue::
             end
 
-            local transferOtherEquipnemtCount = math.ceil(config.data.spawn.transfer.equipment / 100 * #otherEquipnemtItems)
-            local transferEquippedCount = math.ceil(config.data.spawn.transfer.equipedItems / 100 * #equipped)
-            local transferMagicItemsCount = math.ceil(config.data.spawn.transfer.magicItems / 100 * #magicItems)
-            local transferBooksCount = math.ceil(config.data.spawn.transfer.books / 100 * #books)
-            local transferMiscCount = math.ceil(config.data.spawn.transfer.misc / 100 * #miscItems)
+            local function calcNumber(val, maxVal)
+                return config.data.spawn.transfer.inPersent and math.ceil(val / 100 * maxVal) or val
+            end
+
+            local transferOtherEquipnemtCount = calcNumber(config.data.spawn.transfer.equipment, #otherEquipnemtItems)
+            local transferEquippedCount = calcNumber(config.data.spawn.transfer.equipedItems, #equipped)
+            local transferMagicItemsCount = calcNumber(config.data.spawn.transfer.magicItems, #magicItems)
+            local transferBooksCount = calcNumber(config.data.spawn.transfer.books, #books)
+            local transferMiscCount = calcNumber(config.data.spawn.transfer.misc, #miscItems)
             local struct = {
                 {transferOtherEquipnemtCount, otherEquipnemtItems},
                 {transferEquippedCount, advTable.deepcopy(equipped)},

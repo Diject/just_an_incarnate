@@ -71,6 +71,7 @@ this.default = {
     spawn = {
         addSummonSpell = true,
         transfer = {
+            inPersent = true,
             equipment = 100,
             equipedItems = 100,
             magicItems = 100,

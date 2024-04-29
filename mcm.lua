@@ -485,12 +485,13 @@ function this.registerModConfig()
         table.insert(spawnCrea.customLinkedElements, spawnBody) ---@diagnostic disable-line: undefined-field
 
         local transferGroup = corpsePage:createCategory{label = "Transferring items from the player to the copy(creature)"}
-        createLabel{self = transferGroup, label = "Most of the settings below are % of item stacks in your inventory. Each stack may contain several identical items"}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "equipedItems"}, label = "Transfer this % of equipped items", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "equipment"}, label = "Transfer this % of items that you can equip but are currently unequipped", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "magicItems"}, label = "Transfer this % of items like scrolls or potions", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "misc"}, label = "Transfer this % of miscellaneous items", limits = {min = 0, max = 100}}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "books"}, label = "Transfer this % of books", limits = {min = 0, max = 100}}
+        createLabel{self = transferGroup, label = "Most of the settings below are number (or percentage) of item stacks in the inventory of dead character. Each stack may contain several identical items"}
+        createYesNo{self = transferGroup, config = {path = "spawn.transfer", name = "inPersent"}, label = "Transfer percentage of items instead of quantity"}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "equipedItems"}, label = "Transfer this number or % of equipped items", limits = {min = 0, max = 100}}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "equipment"}, label = "Transfer this number or % of items that you can equip but are currently unequipped", limits = {min = 0, max = 100}}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "magicItems"}, label = "Transfer this number or % of items like scrolls or potions", limits = {min = 0, max = 100}}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "misc"}, label = "Transfer this number or % of miscellaneous items", limits = {min = 0, max = 100}}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "books"}, label = "Transfer this number or % of books", limits = {min = 0, max = 100}}
         createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "goldPercent"}, label = "Transfer this % of your gold", limits = {min = 0, max = 100}}
         createYesNo{self = transferGroup, config = {path = "spawn.transfer.replace", name = "enabled"}, label = "Give a chance to replace transferred equipped items by items from a random NPC"}
         createNumberEdit{self = transferGroup, config = {path = "spawn.transfer.replace", name = "regionSize"}, label = "The higher the value, the more varied the items will be selected", limits = {min = 5, max = 100}}
