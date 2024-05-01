@@ -166,6 +166,8 @@ local function processDead()
         limitToBase = true,
     })
 
+    config.localConfig.count = config.localConfig.count + 1 ---@diagnostic disable-line: inject-field
+
     local decreaseExecuted = false
     if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
         playerLib.levelDown(config.data.decrease.level.count)
@@ -219,8 +221,6 @@ local function processDead()
         current = 999999,
         limitToBase = true,
     })
-
-    config.localConfig.count = config.localConfig.count + 1 ---@diagnostic disable-line: inject-field
 
     local statMenu = tes3ui.findMenu("MenuStat")
     if statMenu then
