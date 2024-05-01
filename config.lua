@@ -66,6 +66,11 @@ this.default = {
                 attributes = true,
             },
         },
+        spell = {
+            count = 1,
+            interval = 15,
+            random = true,
+        },
         combine = true,
     },
     spawn = {

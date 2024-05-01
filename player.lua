@@ -532,6 +532,36 @@ function this.skillDown(decrBy)
     end
 end
 
+function this.removeSpells(count, isRandom)
+    local playerLogData = playerLogger.playerData()
+    local spellData = {}
+    for i = #playerLogData, 1, -1 do
+        if count <= 0 then return end
+        ---@type dataLogger.data.struct
+        local data = playerLogData[i]
+        if data.event == playerLogger.eventTypes["spellLearned"]then
+            table.insert(spellData, {i, data.spellId})
+        end
+    end
+    for i = 1, count do
+        if #spellData <= 0 then break end
+        if not isRandom then
+            tes3.removeSpell{reference = tes3.player, spell = spellData[2]}
+            log("spell removed: id", spellData[2])
+            table.remove(playerLogData, spellData[1])
+        else
+            local id = math.random(#spellData)
+            local data = spellData[id]
+            if data then
+                tes3.removeSpell{reference = tes3.player, spell = data[2]}
+                log("spell removed: id", data[2])
+                table.remove(playerLogData, data[1])
+                table.remove(spellData, id)
+            end
+        end
+    end
+end
+
 function this.getLastLevel()
     local playerLogData = playerLogger.playerData()
     for i = #playerLogData, 1, -1 do

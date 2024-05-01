@@ -438,14 +438,19 @@ function this.registerModConfig()
         createYesNo{self = progressPenatiesPage, config = {path = "decrease", name = "combine"}, label = "Can these penalties be combined in one death? Otherwise, only leveldown will apply if the conditions for this are met"}
 
         createLabel{self = progressPenatiesPage, label = "Decrease the player's level and all gained attributes for that level after death", labelColor = tes3.palette.bigAnswerOverColor}
-        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.level", name = "count"}, label = "The value by which the player's level will be reduced", limits = {min = 0}}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.level", name = "count"}, label = "The value by which the player's level will be reduced. 0 - disabled", limits = {min = 0}}
         createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.level", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
 
         createLabel{self = progressPenatiesPage, label = "Decrease player's last increased skills after death", labelColor = tes3.palette.bigAnswerOverColor}
-        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.skill", name = "count"}, label = "The number of skillups that will be reduced", limits = {min = 0}}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.skill", name = "count"}, label = "The number of skillups that will be reduced. 0 - disabled", limits = {min = 0}}
         createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.skill", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
         createYesNo{self = progressPenatiesPage, config = {path = "decrease.skill.levelUp", name = "progress"}, label = "Remove progression in levelup for the removed skill"}
         createYesNo{self = progressPenatiesPage, config = {path = "decrease.skill.levelUp", name = "attributes"}, label = "Remove progression in attribute levelup for the removed skill"}
+
+        createLabel{self = progressPenatiesPage, label = "Remove player's spells after death", labelColor = tes3.palette.bigAnswerOverColor}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.spell", name = "count"}, label = "The number of spells that will be removed. 0 - disabled", limits = {min = 0}}
+        createYesNo{self = progressPenatiesPage, config = {path = "decrease.spell", name = "random"}, label = "Remove a random spell. Otherwise, the last spell learned"}
+        createNumberEdit{self = progressPenatiesPage, config = {path = "decrease.spell", name = "interval"}, label = "The interval in player deaths to apply this penalty", limits = {min = 1}}
 
         createLabel{self = penaltyPage, label = ""}
         createLabel{self = penaltyPage, label = "Change player parameters to random ones after death", labelColor = tes3.palette.bigAnswerOverColor}

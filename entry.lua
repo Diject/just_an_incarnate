@@ -167,13 +167,19 @@ local function processDead()
     })
 
     local decreaseExecuted = false
-    if config.data.decrease.skill.count > 0 and config.localConfig.count % config.data.decrease.skill.interval == 0 then
+    if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
+        playerLib.levelDown(config.data.decrease.level.count)
+        decreaseExecuted = true
+    end
+    if config.data.decrease.skill.count > 0 and config.localConfig.count % config.data.decrease.skill.interval == 0 and
+            (config.data.decrease.combine or not decreaseExecuted) then
         playerLib.skillDown(config.data.decrease.skill.count)
         decreaseExecuted = true
     end
-    if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 and
+    if config.data.decrease.spell.count > 0 and config.localConfig.count % config.data.decrease.spell.interval == 0 and
             (config.data.decrease.combine or not decreaseExecuted) then
-        playerLib.levelDown(config.data.decrease.level.count)
+        playerLib.removeSpells(config.data.decrease.spell.count, config.data.decrease.spell.random)
+        decreaseExecuted = true
     end
 
     if config.data.misc.rechargePower then
