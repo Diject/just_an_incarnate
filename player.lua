@@ -586,7 +586,14 @@ function this.giveEquipmentFromRandomNPC(countMul)
         end
         endLabel = i
     end
-    local startLabel = math.floor(math.max(1, endLabel - #npcs * countMul))
+    local startLabel = 1
+    for i, npcData in ipairs(npcs) do
+        if npcData.level >= playerLevel * countMul then
+            break
+        end
+        startLabel = i
+    end
+    if startLabel > endLabel - 15 then startLabel = math.max(1, endLabel - 15) end
     local matchedNPC = npcs[math.random(startLabel, endLabel)].object
     log("equipment from:", matchedNPC)
     for _, stack in pairs(matchedNPC.inventory) do
