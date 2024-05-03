@@ -410,6 +410,7 @@ function this.registerModConfig()
         createYesNo{self = respawnPage, config = {path = "revive", name = "enabled"}, label = "Revive player character after death"}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "delay"}, label = "Delay before respawn", limits = {min = 2, max = 10}}
         createNumberEdit{self = respawnPage, config = {path = "revive", name = "safeTime"}, label = "Safe time after respawn", limits = {min = 0, max = 10}}
+        createYesNo{self = respawnPage, config = {path = "misc", name = "resetActorsToDefault"}, label = "Reset disposition, health, fatigue and magicka of the actors in the cell where you died"}
 
         local interiorGroup = respawnPage:createCategory{label = "Respawn after death in an interior cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "divineMarker"}, label = "On an imperial shrine"}

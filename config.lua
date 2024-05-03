@@ -42,6 +42,7 @@ this.default = {
         rechargePower = true,
         sendDeathEvent = true,
         sendLoadedEvent = false,
+        resetActorsToDefault = true,
     },
     change = {
         race = false,
