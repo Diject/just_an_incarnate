@@ -8,6 +8,8 @@ local version = 0
 
 local this = {}
 
+this.firstInit = false
+
 ---@class config.globalData
 this.default = {
     revive = {
@@ -28,7 +30,6 @@ this.default = {
             templeMarker = true,
             prisonMarker = true,
             exteriorDoorMarker = false,
-            interiorDoorMarker = false,
             exitFromInterior = false,
             recall = true,
         },
@@ -126,6 +127,7 @@ do
         advTable.addMissing(this.data, this.default)
         this.global = advTable.deepcopy(this.data)
     else
+        this.firstInit = true
         mwse.saveConfig(globalStorageName, this.data)
     end
 end
@@ -215,6 +217,21 @@ end
 
 function this.updateVersionInPlayerStorage()
     this.localConfig.version = version
+end
+
+function this.applyDefault()
+    local data = advTable.deepcopy(this.default)
+    data.revive.enabled = nil
+    if tes3.player then
+        advTable.addMissing(this.localConfig.config, data)
+        advTable.applyChanges(this.localConfig.config, data)
+        advTable.applyChanges(this.data, this.localConfig.config)
+        log("Local config to default")
+    else
+        advTable.applyChanges(this.global, data)
+        advTable.applyChanges(this.data, data)
+        log("Global config to default")
+    end
 end
 
 return this

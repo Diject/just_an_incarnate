@@ -388,3 +388,12 @@ local function deathCallback(e)
     dataStorage.savePlayerDeathInfo(config.localConfig.id)
 end
 event.register(tes3.event.death, deathCallback)
+
+--- @param e enterFrameEventData
+local function firstInit(e)
+    if config.firstInit then
+        include("diject.just_an_incarnate.quickInit").showMessage()
+    end
+    event.unregister(tes3.event.enterFrame, firstInit)
+end
+event.register(tes3.event.enterFrame, firstInit)

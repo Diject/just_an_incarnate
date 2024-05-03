@@ -400,6 +400,9 @@ function this.registerModConfig()
             "If you want to reset/set global on all settings from a tab, select this tab, hold down shift/alt and change the tab."
         }
         createYesNo{self = mainPage, config = {path = "revive", name = "enabled"}, label = "Revive player character after death"}
+        mainPage:createButton{buttonText = "Apply preset", callback = function()
+            include("diject.just_an_incarnate.quickInit").showMessage()
+        end}
     end
 
     do
