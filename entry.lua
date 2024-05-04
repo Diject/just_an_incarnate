@@ -170,20 +170,62 @@ local function processDead()
 
     config.localConfig.count = config.localConfig.count + 1 ---@diagnostic disable-line: inject-field
 
+    local statDecreaseMessage = ""
+    local decreasedStats = {attributes = {}, skills = {}}
     local decreaseExecuted = false
     if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
-        playerLib.levelDown(config.data.decrease.level.count)
+        local data = playerLib.levelDown(config.data.decrease.level.count)
+        if data.level ~= 0 then
+            statDecreaseMessage = statDecreaseMessage.." Your level "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level))..".\n"
+        end
+        if data.health ~= 0 then
+            statDecreaseMessage = statDecreaseMessage.." Your healt "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health))..".\n"
+        end
+        for attrId, val in pairs(data.attributes) do
+            if val ~= 0 then
+                decreasedStats.attributes[attrId] = (decreasedStats.attributes[attrId] or 0) + val
+            end
+        end
+        for skillId, val in pairs(data.skills) do
+            if val ~= 0 then
+                decreasedStats.skills[skillId] = (decreasedStats.skills[skillId] or 0) + val
+            end
+        end
         decreaseExecuted = true
     end
     if config.data.decrease.skill.count > 0 and config.localConfig.count % config.data.decrease.skill.interval == 0 and
             (config.data.decrease.combine or not decreaseExecuted) then
-        playerLib.skillDown(config.data.decrease.skill.count)
+        local data = playerLib.skillDown(config.data.decrease.skill.count)
+        for skillId, val in pairs(data) do
+            if val ~= 0 then
+                decreasedStats.skills[skillId] = (decreasedStats.skills[skillId] or 0) + val
+            end
+        end
         decreaseExecuted = true
     end
+    local forgettedSpellsStr = ""
     if config.data.decrease.spell.count > 0 and config.localConfig.count % config.data.decrease.spell.interval == 0 and
             (config.data.decrease.combine or not decreaseExecuted) then
-        playerLib.removeSpells(config.data.decrease.spell.count, config.data.decrease.spell.random)
+        local data = playerLib.removeSpells(config.data.decrease.spell.count, config.data.decrease.spell.random)
+        for _, spellId in pairs(data) do
+            local spell = tes3.getObject(spellId)
+            if spell then
+                if forgettedSpellsStr ~= "" then
+                    forgettedSpellsStr = forgettedSpellsStr..", "
+                end
+                forgettedSpellsStr = forgettedSpellsStr.."\""..spell.name.."\""
+            end
+        end
         decreaseExecuted = true
+    end
+    for attrId, val in pairs(decreasedStats.attributes) do
+        statDecreaseMessage = statDecreaseMessage.." Your "..tes3.attributeName[attrId].." "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val))..".\n"
+    end
+    for skillId, val in pairs(decreasedStats.skills) do
+        statDecreaseMessage = statDecreaseMessage.." Your "..tes3.skillName[skillId].." "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val))..".\n"
+    end
+    if forgettedSpellsStr ~= "" then
+        statDecreaseMessage = statDecreaseMessage.."You forgot "..forgettedSpellsStr.."."
     end
 
     if config.data.misc.rechargePower then
@@ -245,6 +287,9 @@ local function processDead()
         tes3.setPlayerControlState{enabled = true,}
         tes3.mobilePlayer.paralyze = 0
         tes3.cancelAnimationLoop{reference = tes3.player}
+        if statDecreaseMessage ~= "" then
+            tes3.messageBox{message = config.data.text.statDecreaseMessage.."\n"..statDecreaseMessage, duration = 20}
+        end
         if config.data.misc.sendLoadedEvent then
             local lastLoadedFile = tes3.dataHandler.nonDynamicData.lastLoadedFile
             event.trigger(tes3.event.loaded, {

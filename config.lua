@@ -111,7 +111,8 @@ this.default = {
     },
     text = {
         death = "You have met your destiny and no longer carry the burden of prophecy. You were a false incarnate.",
-        summonSpellDescription = "Teleports all false incarnates from the current location to you",
+        summonSpellDescription = "Teleports all false incarnates from the current location to you.",
+        statDecreaseMessage = "You feel you were able to accomplish more in another life, but have lost everything."
     },
 }
 

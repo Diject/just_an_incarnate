@@ -495,41 +495,51 @@ function this.levelDown(decrBy)
     local player = tes3.player
     local levelTo = player.object.level - decrBy <= 1 and 1 or player.object.level - decrBy
     local playerLogData = playerLogger.playerData()
+    local initialLevel = player.object.level
+    local out = {level = 0, health = 0, attributes = {}, skills = {}}
     for i = #playerLogData, 1, -1 do
         ---@type dataLogger.data.struct
         local data = playerLogData[i]
         if data.event == playerLogger.eventTypes["levelUp"] then
             if data.value <= levelTo then
                 tes3.runLegacyScript{command = "setlevel "..tostring(levelTo), reference = player} ---@diagnostic disable-line: missing-fields
+                out.level = levelTo - initialLevel
                 log("level decreased: to", levelTo)
-                return
+                return out
             else
                 for id, val in ipairs(data.attributes) do
                     tes3.modStatistic{reference = tes3.mobilePlayer, attribute = id - 1, value = -val,}
+                    out.attributes[id - 1] = (out.attributes[id - 1] or 0) - val
                     log("attribute decreased: id", id - 1)
                 end
                 tes3.mobilePlayer.health.base = tes3.mobilePlayer.health.base - (data.health or 0)
+                out.health = out.health - (data.health or 0)
                 log("health decreased: by", data.health, "to", tes3.mobilePlayer.health.base)
             end
         elseif data.event == playerLogger.eventTypes["skillRaised"] then
             decreaseSkill(data.skillId)
+            out.skills[data.skillId] = (out.skills[data.skillId] or 0) - 1
         end
         table.remove(playerLogData, i)
     end
+    return out
 end
 
 function this.skillDown(decrBy)
     local playerLogData = playerLogger.playerData()
+    local skills = {}
     for i = #playerLogData, 1, -1 do
-        if decrBy <= 0 then return end
+        if decrBy <= 0 then return skills end
         ---@type dataLogger.data.struct
         local data = playerLogData[i]
         if data.event == playerLogger.eventTypes["skillRaised"] then
             decreaseSkill(data.skillId)
             table.remove(playerLogData, i)
             decrBy = decrBy - 1
+            skills[data.skillId] = (skills[data.skillId] or 0) - 1
         end
     end
+    return skills
 end
 
 function this.removeSpells(count, isRandom)
@@ -543,10 +553,12 @@ function this.removeSpells(count, isRandom)
             table.insert(spellData, {i, data.spellId})
         end
     end
+    local removedSpells = {}
     for i = 1, count do
         if #spellData <= 0 then break end
         if not isRandom then
             tes3.removeSpell{reference = tes3.player, spell = spellData[2]}
+            table.insert(removedSpells, spellData[2])
             log("spell removed: id", spellData[2])
             table.remove(playerLogData, spellData[1])
         else
@@ -554,12 +566,14 @@ function this.removeSpells(count, isRandom)
             local data = spellData[id]
             if data then
                 tes3.removeSpell{reference = tes3.player, spell = data[2]}
+                table.insert(removedSpells, spellData[2])
                 log("spell removed: id", data[2])
                 table.remove(playerLogData, data[1])
                 table.remove(spellData, id)
             end
         end
     end
+    return removedSpells
 end
 
 function this.getLastLevel()
