@@ -27,6 +27,13 @@ local function loadedCallback(e)
         playerLib.removeSummonSpell()
     end
 
+    local statMenu = tes3ui.findMenu("MenuStat")
+    if statMenu and config.localConfig.count > 0 then
+        local nameZone = statMenu:findChild("PartDragMenu_title")
+        nameZone.text = tes3.player.object.name.." The "..tostring(config.localConfig.count + 1).."th"
+        statMenu:getTopLevelMenu():updateLayout()
+    end
+
     if e.newGame then return end
     if customClassLib.isGameCustomClass() then
         customClassLib.saveClassData(tes3.player.object.class)
@@ -345,6 +352,7 @@ local function onDamage(e)
         if isDead then return false end
         isDead = true
         log("triggered", "h",tes3.mobilePlayer.health.current)
+        tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.power, removeSpell = false}
         tes3.setPlayerControlState{enabled = false,}
         tes3.worldController.charGenState.value = 10
         if config.data.text.death then

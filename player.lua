@@ -464,10 +464,10 @@ local function menuStatCallback(e)
         nameZone.text = tes3.player.object.name.." The "..tostring(config.localConfig.count + 1).."th"
         e.element:getTopLevelMenu():updateLayout()
     end
+    if not this.menuMode then return end
     tes3ui.leaveMenuMode()
 end
 event.register(tes3.event.uiActivated, menuStatCallback, {filter = "MenuStat", priority = priority})
-
 
 -- ########################
 
@@ -768,7 +768,7 @@ function this.createDuplicate()
             local books = {}
             local miscItems = {}
             for _, stack in pairs(tes3.mobilePlayer.inventory) do
-                if boundItems[stack.object.id] then goto continue end
+                if boundItems[stack.object.id] or not stack.object then goto continue end
                 if stack.object.isGold then
                     local goldPercent = config.data.spawn.transfer.goldPercent / 100
                     if goldPercent > 0 then
@@ -776,7 +776,8 @@ function this.createDuplicate()
                         tes3.transferItem{from = tes3.player, to = newRef, item = stack.object, count = count, playSound = true, limitCapacity = false, updateGUI = false}
                     end
                 elseif (stack.object.objectType == tes3.objectType.armor or stack.object.objectType == tes3.objectType.clothing or
-                        stack.object.objectType == tes3.objectType.weapon or stack.object.objectType == tes3.objectType.ammunition) then
+                        stack.object.objectType == tes3.objectType.weapon or stack.object.objectType == tes3.objectType.ammunition) and
+                        stack.object.weight > 0 then
                     if tes3.getEquippedItem{actor = tes3.player, objectType = stack.object.objectType, slot = stack.object.slot, type = stack.object.type} then
                         table.insert(equipped, {object = stack.object, count = stack.count})
                     else
@@ -786,7 +787,7 @@ function this.createDuplicate()
                     table.insert(magicItems, {object = stack.object, count = stack.count})
                 elseif stack.object.objectType == tes3.objectType.book then
                     table.insert(books, {object = stack.object, count = stack.count})
-                else
+                elseif stack.object.weight > 0 then
                     table.insert(miscItems, {object = stack.object, count = stack.count})
                 end
                 ::continue::
