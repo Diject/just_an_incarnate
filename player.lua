@@ -566,7 +566,7 @@ function this.removeSpells(count, isRandom)
             local data = spellData[id]
             if data then
                 tes3.removeSpell{reference = tes3.player, spell = data[2]}
-                table.insert(removedSpells, spellData[2])
+                table.insert(removedSpells, data[2])
                 log("spell removed: id", data[2])
                 table.remove(playerLogData, data[1])
                 table.remove(spellData, id)
@@ -660,7 +660,6 @@ end
 
 local function addRestoreSpells_timer()
     tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_attributes"}
-    tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_effects"}
     tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_skills_0"}
     tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_skills_1"}
     tes3.removeSpell{reference = tes3.player, spell = "jai_curespell_skills_2"}
@@ -670,7 +669,6 @@ end
 -- except dynamic stats like health
 function this.addRestoreSpells(forTime)
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_attributes"}
-    tes3.addSpell{reference = tes3.player, spell = "jai_curespell_effects"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_0"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_1"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_2"}

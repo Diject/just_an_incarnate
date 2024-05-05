@@ -161,6 +161,15 @@ local function processDead()
         end
     end
 
+    if config.data.revive.removeEffects then
+        tes3.cast{ reference = tes3.player, target = tes3.player, spell = "jai_dispel", instant = true, alwaysSucceeds = true, bypassResistances = true }
+    end
+    if config.data.revive.removeDiseases then
+        tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.disease, removeSpell = false}
+        tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.blight, removeSpell = false}
+    end
+    playerLib.addRestoreSpells(math.max(1, config.data.revive.safeTime))
+
     tes3.modStatistic({
         reference = tes3.mobilePlayer,
         name = "health",
@@ -355,7 +364,6 @@ local function onDamage(e)
             tes3.playAnimation{reference = tes3.player1stPerson, group = tes3.animationGroup.knockOut,}
         end
         tes3.mobilePlayer.paralyze = 1
-        playerLib.addRestoreSpells(math.max(1, config.data.revive.safeTime + config.data.revive.delay))
         tes3.fadeOut{duration = config.data.revive.delay}
         timer.start{duration = config.data.revive.delay, callback = processDead}
     end
