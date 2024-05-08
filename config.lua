@@ -19,13 +19,13 @@ this.default = {
         removeEffects = true,
         removeDiseases = false,
         interior = {
-            divineMarker = true,
-            templeMarker = true,
-            prisonMarker = true,
+            divineMarker = false,
+            templeMarker = false,
+            prisonMarker = false,
             exteriorDoorMarker = false,
             interiorDoorMarker = false,
-            exitFromInterior = false,
-            recall = true,
+            exitFromInterior = true,
+            recall = false,
         },
         exterior = {
             divineMarker = true,
@@ -60,11 +60,11 @@ this.default = {
     decrease = {
         level = {
             count = 1,
-            interval = 25,
+            interval = 20,
         },
         skill = {
             count = 1,
-            interval = 8,
+            interval = 5,
             levelUp = {
                 progress = true,
                 attributes = true,
@@ -72,7 +72,7 @@ this.default = {
         },
         spell = {
             count = 1,
-            interval = 15,
+            interval = 10,
             random = true,
         },
         combine = true,
@@ -93,16 +93,16 @@ this.default = {
             }
         },
         body = {
-            chance = 50,
+            chance = 80,
             stats = {
                 health = 200,
                 fatigue = 200,
                 magicka = 200,
             },
-            chanceToCorpse = 50,
+            chanceToCorpse = 75,
         },
         creature = {
-            chance = 50,
+            chance = 20,
             stats = {
                 health = 200,
                 fatigue = 150,
