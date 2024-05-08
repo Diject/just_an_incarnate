@@ -146,7 +146,7 @@ local function callback(e)
         config.setValueByPath("decrease.combine", true)
     elseif e.button == 8 then
         config.setValueByPath("decrease.level.count", 1)
-        config.setValueByPath("decrease.level.interval", 20)
+        config.setValueByPath("decrease.level.interval", 25)
         config.setValueByPath("decrease.skill.count", 1)
         config.setValueByPath("decrease.skill.interval", 5)
         config.setValueByPath("decrease.skill.levelUp.progress", true)
