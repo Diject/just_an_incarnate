@@ -60,7 +60,7 @@ this.default = {
     decrease = {
         level = {
             count = 1,
-            interval = 20,
+            interval = 25,
         },
         skill = {
             count = 1,
