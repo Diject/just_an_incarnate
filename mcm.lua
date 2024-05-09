@@ -505,7 +505,7 @@ function this.registerModConfig()
         createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "books"}, label = "Transfer this number or % of books", limits = {min = 0, max = 100}}
         createNumberEdit{self = transferGroup, config = {path = "spawn.transfer", name = "goldPercent"}, label = "Transfer this % of your gold", limits = {min = 0, max = 100}}
         createYesNo{self = transferGroup, config = {path = "spawn.transfer.replace", name = "enabled"}, label = "Give a chance to replace transferred equipped items by items from a random NPC"}
-        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer.replace", name = "regionSize"}, label = "The higher the value, the better the items will be selected", limits = {min = 5, max = 100}}
+        createNumberEdit{self = transferGroup, config = {path = "spawn.transfer.replace", name = "regionSize"}, label = "The higher the value, the better the items will be selected", limits = {min = 5, max = 200}}
     end
 
     do
