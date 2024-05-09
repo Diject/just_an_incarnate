@@ -3,7 +3,7 @@ local advTable = include("diject.just_an_incarnate.utils.table")
 local playerLogger = include("diject.just_an_incarnate.storage.playerDataLogger")
 local customClassLib = include("diject.just_an_incarnate.libs.customClass")
 local dataStorage = include("diject.just_an_incarnate.storage.dataStorage")
-local npc = include("diject.just_an_incarnate.libs.npc")
+local npcLib = include("diject.just_an_incarnate.libs.npc")
 local config = include("diject.just_an_incarnate.config")
 local localStorage = include("diject.just_an_incarnate.storage.localStorage")
 local bodypartChanger = require("diject.mwse_libs.bodypartChanger")
@@ -615,14 +615,15 @@ function this.reevaluateMissedPlayerEquipment()
     end
 end
 
-function this.giveEquipmentFromRandomNPC(countMul)
+function this.giveEquipmentFromRandomNPC(countMul, playerLevel)
     local npcs = {}
     for obj in tes3.iterateObjects(tes3.objectType.npc) do
-        table.insert(npcs, {object = obj, level = obj.level}) ---@diagnostic disable-line: undefined-field
+        if obj.id ~= "player" and not obj.id:find("_dpl_") then
+            table.insert(npcs, {object = obj, level = obj.level}) ---@diagnostic disable-line: undefined-field
+        end
     end
     table.sort(npcs, function(a, b) return a.level < b.level end)
 
-    local playerLevel = tes3.player.object.level
     local endLabel = 1
     for i, npcData in ipairs(npcs) do
         if npcData.level > playerLevel then
@@ -637,24 +638,69 @@ function this.giveEquipmentFromRandomNPC(countMul)
         end
         startLabel = i
     end
-    if startLabel > endLabel - 15 then startLabel = math.max(1, endLabel - 15) end
-    local matchedNPC = npcs[math.random(startLabel, endLabel)].object
-    log("equipment from:", matchedNPC)
-    for _, stack in pairs(matchedNPC.inventory) do
-        local item = stack.object
-        if (item.objectType == tes3.objectType.armor or item.objectType == tes3.objectType.clothing or
-                item.objectType == tes3.objectType.weapon or item.objectType == tes3.objectType.ammunition) then
+    if startLabel > endLabel - 50 then startLabel = math.max(1, endLabel - 50) end
 
-            local equippedItem = tes3.getEquippedItem{actor = tes3.mobilePlayer, objectType = item.objectType, slot = item.slot, type = item.type} ---@diagnostic disable-line: assign-type-mismatch
-            local canEquip = item.objectType ~= tes3.objectType.armor or not tes3.player.object.race.isBeast or
-                not (item.slot == tes3.armorSlot.helmet or item.slot == tes3.armorSlot.boots)
-            if not equippedItem and canEquip then
-                log(item)
-                tes3.addItem{reference = tes3.mobilePlayer, item = item, count = item.objectType == tes3.objectType.ammunition and 20 or 1, limit = false, updateGUI = true}
-                tes3.mobilePlayer:equip{item = item}
+    local allowedItemTypes = {[tes3.objectType.armor] = true, [tes3.objectType.clothing] = true, [tes3.objectType.weapon] = true,
+        [tes3.objectType.ammunition] = true}
+
+    local function chooseNPC(step)
+        step = step - 1
+        local npc = npcs[math.random(startLabel, endLabel)].object
+        if step >= 0 then
+            local hasItems = false
+            for _, stack in pairs(npc.inventory) do
+                local item = stack.object
+                if allowedItemTypes[item.objectType] then
+                    hasItems = true
+                    break
+                end
+            end
+            if hasItems then
+                return npc
+            else
+                return chooseNPC(step)
             end
         end
+        return npc
     end
+    local matchedNPC = chooseNPC(15)
+
+    log("equipment from:", matchedNPC)
+
+    local getItemTypeStr = function(item)
+        return tostring(item.objectType).."s"..tostring(item.slot).."t"..tostring(item.objectType ~= tes3.objectType.weapon and item.type or "")
+    end
+
+    local itemTypesThatPlayerHave = {}
+    for _, stack in pairs(tes3.mobilePlayer.inventory) do
+        local item = stack.object
+        if allowedItemTypes[item.objectType] then
+            itemTypesThatPlayerHave[getItemTypeStr(item)] = true
+        end
+    end
+
+    local itemsThatCanTransferToPlayer = {}
+    for _, stack in pairs(matchedNPC.inventory) do
+        local item = stack.object
+        if  allowedItemTypes[item.objectType] and not itemTypesThatPlayerHave[getItemTypeStr(item)] then
+            local itemTypeStr = getItemTypeStr(item)
+            if not itemsThatCanTransferToPlayer[itemTypeStr] then itemsThatCanTransferToPlayer[itemTypeStr] = {} end
+            table.insert(itemsThatCanTransferToPlayer[itemTypeStr], item)
+        end
+    end
+
+    for _, group in pairs(itemsThatCanTransferToPlayer) do
+        local item = group[math.random(#group)]
+        local canEquip = item.objectType ~= tes3.objectType.armor or not tes3.player.object.race.isBeast or
+            not (item.slot == tes3.armorSlot.helmet or item.slot == tes3.armorSlot.boots)
+        if canEquip then
+            log(item)
+            tes3.addItem{reference = tes3.mobilePlayer, item = item, count = item.objectType == tes3.objectType.ammunition and 20 or 1, limit = false, updateGUI = true}
+            tes3.mobilePlayer:equip{item = item}
+        end
+    end
+
+
     tes3ui.forcePlayerInventoryUpdate()
 end
 
@@ -734,7 +780,7 @@ function this.createDuplicate()
 
             if not newRef then return end
 
-            npc.transferStats(tes3.player, newRef)
+            npcLib.transferStats(tes3.player, newRef)
             tooltipChanger.saveTooltip(newRef, tes3.player.object.name..(config.localConfig.count > 0 and " The "..tostring(config.localConfig.count + 1).."th" or ""))
             localStorage.getStorage(newRef).isPlayerCopy = true
 

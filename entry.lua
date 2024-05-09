@@ -254,8 +254,9 @@ local function processDead()
 
     playerLib.reevaluateMissedPlayerEquipment()
     if config.data.spawn.transfer.replace.enabled then
+        local level = tes3.player.object.level
         timer.delayOneFrame(function()
-            playerLib.giveEquipmentFromRandomNPC(config.data.spawn.transfer.replace.regionSize / 100)
+            playerLib.giveEquipmentFromRandomNPC(config.data.spawn.transfer.replace.regionSize / 100, level)
         end)
     else
         timer.delayOneFrame(function()
