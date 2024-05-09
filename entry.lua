@@ -192,10 +192,10 @@ local function processDead()
     if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
         local data = playerLib.levelDown(config.data.decrease.level.count)
         if data.level ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.."\nYour level has been "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level)).."."
+            statDecreaseMessage = statDecreaseMessage.."\nYour level has been "..(data.level < 0 and "decreased" or "increased").." by "..tostring(math.abs(data.level)).."."
         end
         if data.health ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.."\nYour health has been "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health)).."."
+            statDecreaseMessage = statDecreaseMessage.."\nYour health has been "..(data.health < 0 and "decreased" or "increased").." by "..tostring(math.abs(data.health)).."."
         end
         for attrId, val in pairs(data.attributes) do
             if val ~= 0 then
@@ -235,10 +235,10 @@ local function processDead()
         decreaseExecuted = true
     end
     for attrId, val in pairs(decreasedStats.attributes) do
-        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.attributeName[attrId].." has been "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val)).."."
+        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.attributeName[attrId].." has been "..(val < 0 and "decreased" or "increased").." by "..tostring(math.abs(val)).."."
     end
     for skillId, val in pairs(decreasedStats.skills) do
-        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.skillName[skillId].." has been "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val)).."."
+        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.skillName[skillId].." has been "..(val < 0 and "decreased" or "increased").." by "..tostring(math.abs(val)).."."
     end
     if forgettedSpellsStr ~= "" then
         statDecreaseMessage = statDecreaseMessage.."\nYou forgot "..forgettedSpellsStr.."."
