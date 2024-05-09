@@ -31,17 +31,19 @@ end
 
 ---@param cell tes3cell
 ---@return tes3reference|nil
-function this.getExitExteriorMarker(cell)
+function this.getExitExteriorMarker(cell, checkedDoors)
     if cell.isOrBehavesAsExterior then
         return nil
     end
+    if not checkedDoors then checkedDoors = {} end
     local markers = {}
     for door in cell:iterateReferences(tes3.objectType.door) do
-        if door.destination then
+        if door.destination and not checkedDoors[door] then
+            checkedDoors[door] = true
             if door.destination.cell.isOrBehavesAsExterior then
                 table.insert(markers, door.destination.marker)
             else
-                local marker = this.getExitExteriorMarker(door.destination.cell)
+                local marker = this.getExitExteriorMarker(door.destination.cell, checkedDoors)
                 if marker then
                     table.insert(markers, marker)
                 end
