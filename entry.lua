@@ -192,10 +192,10 @@ local function processDead()
     if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
         local data = playerLib.levelDown(config.data.decrease.level.count)
         if data.level ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.."\nYour level "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level)).."."
+            statDecreaseMessage = statDecreaseMessage.." Your level "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level))..".\n"
         end
         if data.health ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.."\nYour health "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health)).."."
+            statDecreaseMessage = statDecreaseMessage.." Your healt "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health))..".\n"
         end
         for attrId, val in pairs(data.attributes) do
             if val ~= 0 then
