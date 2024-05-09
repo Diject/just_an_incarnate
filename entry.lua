@@ -192,10 +192,10 @@ local function processDead()
     if config.data.decrease.level.count > 0 and config.localConfig.count % config.data.decrease.level.interval == 0 then
         local data = playerLib.levelDown(config.data.decrease.level.count)
         if data.level ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.." Your level "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level))..".\n"
+            statDecreaseMessage = statDecreaseMessage.."\nYour level has been "..(data.level < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.level)).."."
         end
         if data.health ~= 0 then
-            statDecreaseMessage = statDecreaseMessage.." Your healt "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health))..".\n"
+            statDecreaseMessage = statDecreaseMessage.."\nYour health has been "..(data.health < 0 and "decresed" or "increased").." by "..tostring(math.abs(data.health)).."."
         end
         for attrId, val in pairs(data.attributes) do
             if val ~= 0 then
@@ -235,13 +235,13 @@ local function processDead()
         decreaseExecuted = true
     end
     for attrId, val in pairs(decreasedStats.attributes) do
-        statDecreaseMessage = statDecreaseMessage.." Your "..tes3.attributeName[attrId].." "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val))..".\n"
+        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.attributeName[attrId].." has been "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val)).."."
     end
     for skillId, val in pairs(decreasedStats.skills) do
-        statDecreaseMessage = statDecreaseMessage.." Your "..tes3.skillName[skillId].." "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val))..".\n"
+        statDecreaseMessage = statDecreaseMessage.."\nYour "..tes3.skillName[skillId].." has been "..(val < 0 and "decresed" or "increased").." by "..tostring(math.abs(val)).."."
     end
     if forgettedSpellsStr ~= "" then
-        statDecreaseMessage = statDecreaseMessage.."You forgot "..forgettedSpellsStr.."."
+        statDecreaseMessage = statDecreaseMessage.."\nYou forgot "..forgettedSpellsStr.."."
     end
 
     if config.data.misc.rechargePower then
