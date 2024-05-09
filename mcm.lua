@@ -474,7 +474,7 @@ function this.registerModConfig()
     end
 
     do
-        local corpsePage = template:createPage{label = "Corpse"}
+        local corpsePage = template:createPage{label = "Corpses"}
         createLabel{self = corpsePage, label = "The settings for courpses that stay after the player's death", labelColor = tes3.palette.headerColor}
 
         createYesNo{self = corpsePage, config = {path = "spawn", name = "addSummonSpell"}, label = "Add a spell that summons the all player copies. This may help when they can't be reached", customCallback = addRemSummonSpell}
