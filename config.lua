@@ -15,7 +15,7 @@ this.default = {
     revive = {
         enabled = true,
         delay = 5,
-        safeTime = 3,
+        safeTime = 5,
         removeEffects = true,
         removeDiseases = false,
         interior = {
@@ -89,7 +89,7 @@ this.default = {
             books = 0,
             replace = {
                 enabled = true,
-                regionSize = 10,
+                regionSize = 75,
             }
         },
         body = {
