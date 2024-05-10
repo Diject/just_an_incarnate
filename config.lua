@@ -153,6 +153,7 @@ function this.initLocalData()
         advTable.applyChanges(this.data, this.global)
         local storageData = localStorage.data[localStorageName]
         if not storageData then
+            this.localConfig = advTable.deepcopy(this.localDefault)
             local id = tostring(os.time())
             this.localConfig.id = id:sub(3, id:len())
             localStorage.data[localStorageName] = this.localConfig
