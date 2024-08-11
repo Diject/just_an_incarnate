@@ -40,6 +40,7 @@ local function callback(e)
         config.setValueByPath("revive.interior.interiorDoorMarker", false)
         config.setValueByPath("revive.interior.exitFromInterior", false)
         config.setValueByPath("revive.interior.recall", false)
+        config.setValueByPath("revive.interior.lastRest.enabled", false)
 
         config.setValueByPath("revive.exterior.divineMarker", false)
         config.setValueByPath("revive.exterior.templeMarker", false)
@@ -47,6 +48,7 @@ local function callback(e)
         config.setValueByPath("revive.exterior.exteriorDoorMarker", true)
         config.setValueByPath("revive.exterior.exitFromInterior", false)
         config.setValueByPath("revive.exterior.recall", false)
+        config.setValueByPath("revive.exterior.lastRest.enabled", false)
 
         config.setValueByPath("change.race", true)
         config.setValueByPath("change.bodyParts", true)
@@ -81,6 +83,7 @@ local function callback(e)
         config.setValueByPath("revive.interior.interiorDoorMarker", false)
         config.setValueByPath("revive.interior.exitFromInterior", false)
         config.setValueByPath("revive.interior.recall", false)
+        config.setValueByPath("revive.interior.lastRest.enabled", false)
 
         config.setValueByPath("revive.exterior.divineMarker", true)
         config.setValueByPath("revive.exterior.templeMarker", true)
@@ -88,6 +91,7 @@ local function callback(e)
         config.setValueByPath("revive.exterior.exteriorDoorMarker", false)
         config.setValueByPath("revive.exterior.exitFromInterior", false)
         config.setValueByPath("revive.exterior.recall", false)
+        config.setValueByPath("revive.exterior.lastRest.enabled", false)
 
         config.setValueByPath("change.race", false)
         config.setValueByPath("change.bodyParts", false)
@@ -179,6 +183,7 @@ local function callback(e)
         config.setValueByPath("revive.interior.interiorDoorMarker", false)
         config.setValueByPath("revive.interior.exitFromInterior", false)
         config.setValueByPath("revive.interior.recall", false)
+        config.setValueByPath("revive.interior.lastRest.enabled", false)
 
         config.setValueByPath("revive.exterior.divineMarker", true)
         config.setValueByPath("revive.exterior.templeMarker", true)
@@ -186,6 +191,7 @@ local function callback(e)
         config.setValueByPath("revive.exterior.exteriorDoorMarker", false)
         config.setValueByPath("revive.exterior.exitFromInterior", false)
         config.setValueByPath("revive.exterior.recall", false)
+        config.setValueByPath("revive.exterior.lastRest.enabled", false)
     elseif e.button == 13 then
         config.setValueByPath("revive.interior.divineMarker", false)
         config.setValueByPath("revive.interior.templeMarker", false)
@@ -209,6 +215,7 @@ local function callback(e)
         config.setValueByPath("revive.interior.interiorDoorMarker", true)
         config.setValueByPath("revive.interior.exitFromInterior", true)
         config.setValueByPath("revive.interior.recall", true)
+        config.setValueByPath("revive.interior.lastRest.enabled", true)
 
         config.setValueByPath("revive.exterior.divineMarker", true)
         config.setValueByPath("revive.exterior.templeMarker", true)
@@ -216,6 +223,7 @@ local function callback(e)
         config.setValueByPath("revive.exterior.exteriorDoorMarker", true)
         config.setValueByPath("revive.exterior.exitFromInterior", true)
         config.setValueByPath("revive.exterior.recall", true)
+        config.setValueByPath("revive.exterior.lastRest.enabled", true)
     elseif e.button == 15 then
         e.element:destroy()
     end
@@ -236,8 +244,8 @@ function this.showMessage()
             "I don't want any penalties at all", -- 9
             "I wanna get a new character after death (new race, class and etc.)", -- 10
             "No, keep my old character", -- 11
-            "I wanna respawn only at shrine markers", --12
-            "I wanna respawn at shrine/recall markers and at the entrance for interior dungeons", -- 13
+            "I wanna respawn only at temple markers", --12
+            "I wanna respawn at temple/recall markers and at the entrance for interior dungeons", -- 13
             "I wanna respawn everywhere randomly", -- 14
             "I'm done - close the menu" -- 15
         },
