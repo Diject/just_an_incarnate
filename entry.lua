@@ -12,11 +12,13 @@ local mapSpawner = include("diject.just_an_incarnate.mapSpawner")
 
 
 local onDamagePriority = 1749
+local calcRestInterruptPriority = -1749
 
 local isDead = false
 
 --- @param e loadedEventData
 local function loadedCallback(e)
+    isDead = false
     localStorage.initPlayerStorage()
     config.initLocalData()
     playerLib.reset()
@@ -116,6 +118,7 @@ local function processDead()
 
     if not tes3.worldController.flagTeleportingDisabled then
         local markers = {}
+        local shouldTeleportAnyway = false
 
         local configTable = tes3.player.cell.isOrBehavesAsExterior and config.data.revive.exterior or config.data.revive.interior
 
@@ -155,6 +158,37 @@ local function processDead()
         end
         if configTable.exitFromInterior and tes3.player.cell.isInterior then
             local marker = cellLib.getExitExteriorMarker(tes3.player.cell)
+            if marker then
+                table.insert(markers, {position = marker.position, orientation = marker.orientation, cell = marker.cell})
+            end
+        end
+        if configTable.lastRest.enabled then
+            local dataArr = {}
+            if localStorage.data["lastRest"] then
+                table.insert(dataArr, localStorage.data["lastRest"])
+            end
+            if configTable.lastRest.includeWait and localStorage.data["lastWait"] then
+                table.insert(dataArr, localStorage.data["lastWait"])
+            end
+            if #dataArr > 1 then
+                table.sort(dataArr, function (a, b) return a.time > b.time end)
+            end
+            if #dataArr > 0 then
+                local markerData = dataArr[1]
+                if markerData then
+                    local position = tes3vector3.new(markerData.position.x, markerData.position.y, markerData.position.z)
+                    local orientation = tes3vector3.new(markerData.orientation.x, markerData.orientation.y, markerData.orientation.z)
+                    local cell = tes3.getCell(markerData.cell)
+                    if cell then
+                        table.insert(markers, {position = position, orientation = orientation, cell = cell})
+                    end
+                end
+            end
+            shouldTeleportAnyway = true
+        end
+
+        if shouldTeleportAnyway and #markers == 0 then
+            local marker = tes3.findClosestExteriorReferenceOfObject{object = tes3.getObject("PrisonMarker")}
             if marker then
                 table.insert(markers, {position = marker.position, orientation = marker.orientation, cell = marker.cell})
             end
@@ -461,3 +495,20 @@ local function firstInit(e)
     event.unregister(tes3.event.enterFrame, firstInit)
 end
 event.register(tes3.event.enterFrame, firstInit)
+
+--- @param e calcRestInterruptEventData
+local function calcRestInterruptCallback(e)
+    local player = tes3.player
+    local positionData = {
+        time = os.time(),
+        position = {x = player.position.x, y = player.position.y, z = player.position.z},
+        orientation = {x = player.orientation.x, y = player.orientation.y, z = player.orientation.z},
+        cell = {id = player.cell.isInterior and player.cell.id or nil, x = player.cell.gridX, y = player.cell.gridY}
+    }
+    if e.resting then
+        localStorage.data["lastRest"] = positionData
+    elseif e.waiting then
+        localStorage.data["lastWait"] = positionData
+    end
+end
+event.register(tes3.event.calcRestInterrupt, calcRestInterruptCallback, {priority = calcRestInterruptPriority})

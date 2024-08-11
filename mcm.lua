@@ -415,20 +415,26 @@ function this.registerModConfig()
         createYesNo{self = respawnPage, config = {path = "revive", name = "removeDiseases"}, label = "Cure diseases"}
 
         local interiorGroup = respawnPage:createCategory{label = "Respawn after death in an interior cell"}
-        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "divineMarker"}, label = "On an imperial temple"}
-        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "templeMarker"}, label = "On an Almsivi temple"}
+        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "divineMarker"}, label = "On an imperial temple marker"}
+        createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "templeMarker"}, label = "On an Almsivi temple marker"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "prisonMarker"}, label = "On a prison marker"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exteriorDoorMarker"}, label = "Near a door in a random exterior cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "interiorDoorMarker"}, label = "Near a door in the current cell"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "exitFromInterior"}, label = "Near an exit door leading to exterior cell from the current one"}
         createYesNo{self = interiorGroup, config = {path = "revive.interior", name = "recall"}, label = "On the recall mark"}
+        local inRestGroup = interiorGroup:createCategory{label = "At the last resting place"}
+        createYesNo{self = inRestGroup, config = {path = "revive.interior.lastRest", name = "enabled"}, label = "Enable"}
+        createYesNo{self = inRestGroup, config = {path = "revive.interior.lastRest", name = "includeWait"}, label = "Include places where you waited"}
 
         local exteriorGroup = respawnPage:createCategory{label = "Respawn after death in an exterior cell"}
-        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "divineMarker"}, label = "On an imperial temple"}
-        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "templeMarker"}, label = "On an Almsivi temple"}
+        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "divineMarker"}, label = "On an imperial temple marker"}
+        createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "templeMarker"}, label = "On an Almsivi temple marker"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "prisonMarker"}, label = "On a prison marker"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "exteriorDoorMarker"}, label = "Near a door in a random exterior cell"}
         createYesNo{self = exteriorGroup, config = {path = "revive.exterior", name = "recall"}, label = "On the recall mark"}
+        local exRestGroup = exteriorGroup:createCategory{label = "At the last resting place"}
+        createYesNo{self = exRestGroup, config = {path = "revive.exterior.lastRest", name = "enabled"}, label = "Enable"}
+        createYesNo{self = exRestGroup, config = {path = "revive.exterior.lastRest", name = "includeWait"}, label = "Include places where you waited"}
     end
 
     do

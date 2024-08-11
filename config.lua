@@ -4,7 +4,7 @@ local log = include("diject.just_an_incarnate.utils.log")
 
 local globalStorageName = "JustAnIncarnateByDiject_Config"
 local localStorageName = "localConfig"
-local version = 0
+local version = 1
 
 local this = {}
 
@@ -26,6 +26,10 @@ this.default = {
             interiorDoorMarker = false,
             exitFromInterior = true,
             recall = false,
+            lastRest = {
+                enabled = false,
+                includeWait = false,
+            },
         },
         exterior = {
             divineMarker = true,
@@ -34,6 +38,10 @@ this.default = {
             exteriorDoorMarker = false,
             exitFromInterior = false,
             recall = true,
+            lastRest = {
+                enabled = true,
+                includeWait = false,
+            },
         },
     },
     misc = {
