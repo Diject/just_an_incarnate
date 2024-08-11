@@ -410,7 +410,7 @@ local function onDamage(e)
         tes3.fadeOut{duration = config.data.revive.delay}
         timer.start{duration = config.data.revive.delay, callback = processDead}
     end
-    log("damage", e.damage, "value", damageValue, "health", tes3.mobilePlayer.health.current, "new health", tes3.mobilePlayer.health.current - damageValue)
+    -- log("damage", e.damage, "value", damageValue, "health", tes3.mobilePlayer.health.current, "new health", tes3.mobilePlayer.health.current - damageValue)
 end
 
 event.register(tes3.event.damage, onDamage, {priority = onDamagePriority})
