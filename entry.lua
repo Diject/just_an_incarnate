@@ -62,6 +62,19 @@ local function saveCallback(e)
 end
 event.register(tes3.event.save, saveCallback)
 
+local function ESCKeyDownCallback(e)
+    tes3.worldController.inputController.keyboardState[tes3.scanCode.escape + 1] = 0
+end
+
+
+local function disableESC()
+    event.register("keyDown", ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+end
+
+local function enableESC()
+    event.unregister("keyDown", ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+end
+
 
 local function processDead()
 
@@ -325,7 +338,7 @@ local function processDead()
 
     playerLib.changePlayer()
 
-    tes3.worldController.charGenState.value = -1
+    enableESC()
 
     timer.start{duration = 2, callback = function()
         playerLib.menuMode = false
@@ -389,7 +402,7 @@ local function onDamage(e)
         log("triggered", "h",tes3.mobilePlayer.health.current)
         tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.power, removeSpell = false}
         tes3.setPlayerControlState{enabled = false,}
-        tes3.worldController.charGenState.value = 10
+        disableESC()
         if config.data.text.death then
             tes3.messageBox{message = config.data.text.death, duration = 10}
         end
