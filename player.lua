@@ -33,35 +33,6 @@ local classChoiceEnum = {
 ---@type classChoiceEnum
 local classChoice = classChoiceEnum.ingame
 
-function this.init()
-    for _, race in pairs(tes3.dataHandler.nonDynamicData.races) do
-        for _, spell in pairs(race.abilities) do
-            this.disallowedSpellIds[spell.id:lower()] = true
-        end
-    end
-
-    for _, race in pairs(tes3.dataHandler.nonDynamicData.birthsigns) do
-        for _, spell in pairs(race.spells) do
-            this.disallowedSpellIds[spell.id:lower()] = true
-        end
-    end
-
-    this.disallowedSpellIds["fire bite"] = true
-    this.disallowedSpellIds["chameleon"] = true
-    this.disallowedSpellIds["sanctuary"] = true
-    this.disallowedSpellIds["bound dagger"] = true
-    this.disallowedSpellIds["summon ancestral ghost"] = true
-    this.disallowedSpellIds["water walking"] = true
-    this.disallowedSpellIds["shield"] = true
-    this.disallowedSpellIds["detect_creature"] = true
-    this.disallowedSpellIds["hearth heal"] = true
-end
-
-function this.reset()
-    this.menuMode = false
-    this.bodyPartsChanged = false
-end
-
 
 ---@param class tes3class
 ---@param mul number[-1, 1]
@@ -719,7 +690,6 @@ function this.addRestoreSpells(forTime)
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_1"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_2"}
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_skills_3"}
-    timer.register("JAIByDiject_addRestoreSpells_timer", addRestoreSpells_timer)
     timer.start{duration = forTime, callback = "JAIByDiject_addRestoreSpells_timer"}
 end
 
@@ -729,7 +699,6 @@ end
 
 function this.addDynamicStatsRestoreSpells(forTime)
     tes3.addSpell{reference = tes3.player, spell = "jai_curespell_stats"}
-    timer.register("JAIByDiject_addDynamicStatsRestoreSpells_timer", addDynamicStatsRestoreSpells_timer)
     timer.start{duration = forTime, callback = "JAIByDiject_addDynamicStatsRestoreSpells_timer"}
 end
 
@@ -898,6 +867,41 @@ function this.removeSummonSpell()
     if tes3.player.object.spells:contains(this.summonSpellId) then
         tes3.removeSpell{reference = tes3.player, spell = this.summonSpellId}
     end
+end
+
+
+
+
+function this.init()
+    for _, race in pairs(tes3.dataHandler.nonDynamicData.races) do
+        for _, spell in pairs(race.abilities) do
+            this.disallowedSpellIds[spell.id:lower()] = true
+        end
+    end
+
+    for _, race in pairs(tes3.dataHandler.nonDynamicData.birthsigns) do
+        for _, spell in pairs(race.spells) do
+            this.disallowedSpellIds[spell.id:lower()] = true
+        end
+    end
+
+    this.disallowedSpellIds["fire bite"] = true
+    this.disallowedSpellIds["chameleon"] = true
+    this.disallowedSpellIds["sanctuary"] = true
+    this.disallowedSpellIds["bound dagger"] = true
+    this.disallowedSpellIds["summon ancestral ghost"] = true
+    this.disallowedSpellIds["water walking"] = true
+    this.disallowedSpellIds["shield"] = true
+    this.disallowedSpellIds["detect_creature"] = true
+    this.disallowedSpellIds["hearth heal"] = true
+
+    timer.register("JAIByDiject_addDynamicStatsRestoreSpells_timer", addDynamicStatsRestoreSpells_timer)
+    timer.register("JAIByDiject_addRestoreSpells_timer", addRestoreSpells_timer)
+end
+
+function this.reset()
+    this.menuMode = false
+    this.bodyPartsChanged = false
 end
 
 return this
