@@ -12,6 +12,7 @@ local mapSpawner = include("diject.just_an_incarnate.mapSpawner")
 
 
 local onDamagePriority = 1749
+local disableSavePriority = 1749
 local calcRestInterruptPriority = -1749
 
 local isDead = false
@@ -66,13 +67,30 @@ local function ESCKeyDownCallback(e)
     tes3.worldController.inputController.keyboardState[tes3.scanCode.escape + 1] = 0
 end
 
-
-local function disableESC()
-    event.register("keyDown", ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+--- @param e saveEventData
+local function disableSaveCallback(e)
+    tes3.messageBox("You are not allowed to save now")
+    e.block = true
+    e.claim = true
 end
 
-local function enableESC()
-    event.unregister("keyDown", ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+--- @param e saveEventData
+local function disableLoadCallback(e)
+    tes3.messageBox("You are not allowed to load now")
+    e.block = true
+    e.claim = true
+end
+
+local function disableESCAndSaves()
+    event.register(tes3.event.keyDown, ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+    event.register(tes3.event.save, disableSaveCallback, { priority = disableSavePriority })
+    event.register(tes3.event.load, disableLoadCallback, { priority = disableSavePriority })
+end
+
+local function enableESCAndSaves()
+    event.unregister(tes3.event.keyDown, ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+    event.unregister(tes3.event.save, disableSaveCallback, { priority = disableSavePriority })
+    event.unregister(tes3.event.load, disableLoadCallback, { priority = disableSavePriority })
 end
 
 
@@ -338,8 +356,6 @@ local function processDead()
 
     playerLib.changePlayer()
 
-    enableESC()
-
     timer.start{duration = 2, callback = function()
         playerLib.menuMode = false
         if isWerewolf then
@@ -351,6 +367,7 @@ local function processDead()
         tes3.setPlayerControlState{enabled = true,}
         tes3.mobilePlayer.paralyze = 0
         tes3.cancelAnimationLoop{reference = tes3.player}
+        enableESCAndSaves()
         if statDecreaseMessage ~= "" then
             tes3.messageBox{message = config.data.text.statDecreaseMessage.."\n"..statDecreaseMessage, duration = 20}
         end
@@ -402,7 +419,7 @@ local function onDamage(e)
         log("triggered", "h",tes3.mobilePlayer.health.current)
         tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.power, removeSpell = false}
         tes3.setPlayerControlState{enabled = false,}
-        disableESC()
+        disableESCAndSaves()
         if config.data.text.death then
             tes3.messageBox{message = config.data.text.death, duration = 10}
         end
