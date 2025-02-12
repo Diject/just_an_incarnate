@@ -52,6 +52,7 @@ this.default = {
         rechargePower = true,
         sendDeathEvent = true,
         sendLoadedEvent = false,
+        highPriority = false,
         resetActorsToDefault = true,
     },
     change = {

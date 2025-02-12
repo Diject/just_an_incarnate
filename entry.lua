@@ -12,6 +12,7 @@ local mapSpawner = include("diject.just_an_incarnate.mapSpawner")
 
 
 local onDamagePriority = 1749
+local onDamageLowPriority = -1749
 local disableSavePriority = 1749
 local calcRestInterruptPriority = -1749
 
@@ -443,7 +444,7 @@ local function onDamage(e)
     -- log("damage", e.damage, "value", damageValue, "health", tes3.mobilePlayer.health.current, "new health", tes3.mobilePlayer.health.current - damageValue)
 end
 
-event.register(tes3.event.damage, onDamage, {priority = onDamagePriority})
+event.register(tes3.event.damage, onDamage, {priority = config.data.misc.highPriority and onDamagePriority or onDamageLowPriority})
 
 local randomizerConfig = include("Morrowind_World_Randomizer.storage")
 if randomizerConfig and (not randomizerConfig.version or randomizerConfig.version <= 6) then
