@@ -10,6 +10,8 @@ local cellLib = include("diject.just_an_incarnate.libs.cell")
 local dataStorage = include("diject.just_an_incarnate.storage.dataStorage")
 local mapSpawner = include("diject.just_an_incarnate.mapSpawner")
 
+local ashfall = require("mer.ashfall.interop")
+
 
 local onDamagePriority = 1749
 local onDamageLowPriority = -1749
@@ -263,6 +265,27 @@ local function processDead()
         tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.blight, removeSpell = false}
     end
     playerLib.addRestoreSpells(math.max(1, config.data.revive.safeTime))
+
+    local ashfallConfig = config.data.misc.ashfall
+    if ashfall and ashfallConfig.changeBy ~= 0 then
+        local hunger = ashfall.getHunger()
+        local thirst = ashfall.getThirst()
+        local tiredness = ashfall.getTiredness()
+        local temp = ashfall.getTemp()
+
+        local changeBy = ashfallConfig.changeBy
+        if ashfallConfig.randomize then
+            ashfall.setHunger(math.clamp(hunger + 2 * changeBy * math.random() - changeBy, 0, ashfallConfig.limit))
+            ashfall.setThirst(math.clamp(thirst + 2 * changeBy * math.random() - changeBy, 0, ashfallConfig.limit))
+            ashfall.setTiredness(math.clamp(tiredness + 2 * changeBy * math.random() - changeBy, 0, ashfallConfig.limit))
+            ashfall.setTemp(math.clamp(temp + 2 * changeBy * math.random() - changeBy, -ashfallConfig.limit, ashfallConfig.limit))
+        else
+            ashfall.setHunger(math.clamp(hunger + changeBy, 0, ashfallConfig.limit))
+            ashfall.setThirst(math.clamp(thirst + changeBy, 0, ashfallConfig.limit))
+            ashfall.setTiredness(math.clamp(tiredness + changeBy, 0, ashfallConfig.limit))
+            ashfall.setTemp(math.clamp(temp > 0 and temp + changeBy or temp - changeBy, -ashfallConfig.limit, ashfallConfig.limit))
+        end
+    end
 
     tes3.modStatistic({
         reference = tes3.mobilePlayer,
