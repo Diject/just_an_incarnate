@@ -54,6 +54,12 @@ this.default = {
         sendLoadedEvent = false,
         highPriority = false,
         resetActorsToDefault = true,
+
+        ashfall = {
+            changeBy = 15,
+            limit = 80,
+            randomize = true,
+        },
     },
     change = {
         race = false,

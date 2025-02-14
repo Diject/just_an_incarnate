@@ -75,6 +75,9 @@ local function callback(e)
         config.setValueByPath("spawn.transfer.goldPercent", 100)
         config.setValueByPath("spawn.transfer.replace.enabled", true)
         config.setValueByPath("spawn.transfer.replace.regionSize", 100)
+
+        config.setValueByPath("misc.ashfall.changeBy", 15)
+        config.setValueByPath("misc.ashfall.randomize", false)
     elseif e.button == 2 then
         config.setValueByPath("revive.interior.divineMarker", true)
         config.setValueByPath("revive.interior.templeMarker", true)
@@ -112,6 +115,8 @@ local function callback(e)
 
         config.setValueByPath("spawn.body.chance", 0)
         config.setValueByPath("spawn.creature.chance", 0)
+
+        config.setValueByPath("misc.ashfall.changeBy", 0)
     elseif e.button == 3 then
         config.setValueByPath("spawn.transfer.inPersent", true)
         config.setValueByPath("spawn.transfer.equipment", 100)
@@ -148,6 +153,9 @@ local function callback(e)
         config.setValueByPath("decrease.spell.interval", 4)
         config.setValueByPath("decrease.spell.random", true)
         config.setValueByPath("decrease.combine", true)
+
+        config.setValueByPath("misc.ashfall.changeBy", 30)
+        config.setValueByPath("misc.ashfall.randomize", false)
     elseif e.button == 8 then
         config.setValueByPath("decrease.level.count", 1)
         config.setValueByPath("decrease.level.interval", 25)
@@ -159,6 +167,9 @@ local function callback(e)
         config.setValueByPath("decrease.spell.interval", 10)
         config.setValueByPath("decrease.spell.random", true)
         config.setValueByPath("decrease.combine", false)
+
+        config.setValueByPath("misc.ashfall.changeBy", 15)
+        config.setValueByPath("misc.ashfall.randomize", true)
     elseif e.button == 9 then
         config.setValueByPath("decrease.level.count", 0)
         config.setValueByPath("decrease.skill.count", 0)

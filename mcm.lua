@@ -477,6 +477,11 @@ function this.registerModConfig()
         table.insert(changeClassToPlCustom.customLinkedElements, changeClassToCustom) ---@diagnostic disable-line: undefined-field
         table.insert(changeClassToCustom.customLinkedElements, changeClassToPlCustom) ---@diagnostic disable-line: undefined-field
         createLabel{self = classGroup, label = "Otherwise the class will be from default game classes"}
+
+        local ashfallGroup = penaltyPage:createCategory{label = "Ashfall"}
+        createNumberEdit{self = ashfallGroup, config = {path = "misc.ashfall", name = "changeBy"}, label = "Change condition stats by this value. Positive - make it worse, negative - make it better. 0 - disabled", limits = {min = -100, max = 100}}
+        createYesNo{self = ashfallGroup, config = {path = "misc.ashfall", name = "randomize"}, label = "Randomize stats by the value above instead of the usual addition/subtraction. theStat = theStat + random(-theValue, theValue)"}
+        createNumberEdit{self = ashfallGroup, config = {path = "misc.ashfall", name = "limit"}, label = "The limit that the stats cannot exceed. When the value of any condition stat reaches 100, the player dies completely", limits = {min = 0, max = 100}}
     end
 
     do
