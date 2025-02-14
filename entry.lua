@@ -94,6 +94,27 @@ local function enableESCAndSaves()
     event.unregister(tes3.event.load, disableLoadCallback, { priority = disableSavePriority })
 end
 
+---@param e damageEventData
+local function preventDamageCallback(e)
+    if not isDead then
+        event.unregister(tes3.event.damage, preventDamageCallback, { priority = onDamagePriority })
+        return
+    end
+
+    e.block = true
+    e.damage = 0
+    return false
+end
+
+local function disableDamageToPlayer()
+    event.register(tes3.event.damage, preventDamageCallback, { priority = onDamagePriority })
+end
+
+local function enableDamageToPlayer()
+    event.unregister(tes3.event.damage, preventDamageCallback, { priority = onDamagePriority })
+end
+
+
 
 local function processDead()
 
@@ -362,7 +383,10 @@ local function processDead()
         if isWerewolf then
             tes3.runLegacyScript{command = "set PCWerewolf to 1", reference = tes3.player} ---@diagnostic disable-line: missing-fields
         end
-        timer.start{duration = config.data.revive.safeTime, callback = function() isDead = false end}
+        timer.start{duration = config.data.revive.safeTime, callback = function()
+            enableDamageToPlayer()
+            isDead = false
+        end}
         timer.delayOneFrame(function() tes3.fadeIn{duration = config.data.revive.delay} end)
         playerLib.addDynamicStatsRestoreSpells(math.max(1, config.data.revive.safeTime))
         tes3.setPlayerControlState{enabled = true,}
@@ -417,6 +441,7 @@ local function onDamage(e)
         e.block = true
         if isDead then return false end
         isDead = true
+        disableDamageToPlayer()
         log("triggered", "h",tes3.mobilePlayer.health.current)
         tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.power, removeSpell = false}
         tes3.setPlayerControlState{enabled = false,}
