@@ -66,10 +66,6 @@ local function saveCallback(e)
 end
 event.register(tes3.event.save, saveCallback)
 
-local function ESCKeyDownCallback(e)
-    tes3.worldController.inputController.keyboardState[tes3.scanCode.escape + 1] = 0
-end
-
 --- @param e saveEventData
 local function disableSaveCallback(e)
     tes3.messageBox("You are not allowed to save now")
@@ -84,14 +80,12 @@ local function disableLoadCallback(e)
     e.claim = true
 end
 
-local function disableESCAndSaves()
-    event.register(tes3.event.keyDown, ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+local function disableSaves()
     event.register(tes3.event.save, disableSaveCallback, { priority = disableSavePriority })
     event.register(tes3.event.load, disableLoadCallback, { priority = disableSavePriority })
 end
 
-local function enableESCAndSaves()
-    event.unregister(tes3.event.keyDown, ESCKeyDownCallback, { filter = tes3.scanCode.escape })
+local function enableSaves()
     event.unregister(tes3.event.save, disableSaveCallback, { priority = disableSavePriority })
     event.unregister(tes3.event.load, disableLoadCallback, { priority = disableSavePriority })
 end
@@ -415,7 +409,7 @@ local function processDead()
         tes3.setPlayerControlState{enabled = true,}
         tes3.mobilePlayer.paralyze = 0
         tes3.cancelAnimationLoop{reference = tes3.player}
-        enableESCAndSaves()
+        enableSaves()
         if statDecreaseMessage ~= "" then
             tes3.messageBox{message = config.data.text.statDecreaseMessage.."\n"..statDecreaseMessage, duration = 20}
         end
@@ -468,7 +462,7 @@ local function onDamage(e)
         log("triggered", "h",tes3.mobilePlayer.health.current)
         tes3.removeEffects{reference = tes3.player, castType = tes3.spellType.power, removeSpell = false}
         tes3.setPlayerControlState{enabled = false,}
-        disableESCAndSaves()
+        disableSaves()
         if config.data.text.death then
             tes3.messageBox{message = config.data.text.death, duration = 10}
         end
