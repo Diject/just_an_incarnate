@@ -10,7 +10,7 @@ local cellLib = include("diject.just_an_incarnate.libs.cell")
 local dataStorage = include("diject.just_an_incarnate.storage.dataStorage")
 local mapSpawner = include("diject.just_an_incarnate.mapSpawner")
 
-local ashfall = require("mer.ashfall.interop")
+local ashfall = include("mer.ashfall.interop")
 
 
 local onDamagePriority = 1749
