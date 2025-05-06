@@ -230,11 +230,19 @@ function this.changePlayer()
                     end
                 end
             end
-            tes3.player.baseObject.hair = hairs[math.random(#hairs)]
+            local hair = #hairs > 0 and hairs[math.random(#hairs)] or nil
+            local head
             if tes3.getGlobal("PCVampire") > 0 then
-                tes3.player.baseObject.head = playerObject.female and newRace.femaleBody.vampireHead or newRace.maleBody.vampireHead
+                head = playerObject.female and newRace.femaleBody.vampireHead or newRace.maleBody.vampireHead
             else
-                tes3.player.baseObject.head = heads[math.random(#heads)]
+                head = #heads > 0 and heads[math.random(#heads)] or nil
+            end
+            if hair then
+                tes3.player.baseObject.hair = hair
+            end
+
+            if head then
+                tes3.player.baseObject.head = head
             end
         end
     end)
