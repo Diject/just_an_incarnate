@@ -324,6 +324,8 @@ function this.changePlayer()
         if this.menuMode then
             tes3ui.leaveMenuMode()
         else
+            tes3.player:updateEquipment()
+            tes3.player1stPerson:updateEquipment()
             e.timer:cancel()
         end
     end}
